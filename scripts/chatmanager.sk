@@ -2,14 +2,16 @@
 
 
 
-
 command /chatcolor <player> <text>:
 	permission: chat.color
 	usage: /chatcolor <player> <color>
 	trigger:
-		set {chatcolor.%arg-1%} to arg-2
-		send "%arg-1%'s chat color is now <%arg-2%>%arg-2%" to player
-		set arg-1's tablist name to "<%arg-2 parsed as color%>%arg-1%"
+		if arg-2 parsed as color is not color:
+			send "That is not a valid color, possible colors are:", "<red>red, <light red>light red, <purple>purple, <light purple>light purple, <blue>blue, <light blue>light blue, <aqua>aqua, <light cyan>light cyan, <green>green, <lime>lime, <orange>orange, <yellow>yellow, <white>white, <grey>grey, <dark grey>dark grey, <black>black" to player
+		else:
+			set {chatcolor.%arg-1%} to arg-2
+			send "%arg-1%'s chat color is now <%arg-2%>%arg-2%" to player
+			set arg-1's tablist name to "<%arg-2 parsed as color%>%arg-1%"
 
 
 
