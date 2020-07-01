@@ -1,0 +1,21 @@
+
+
+command /skload <text>:
+	usage: /skload <script>
+	trigger:
+		delete file "plugins/Skript/scripts/%arg-1%.sk"
+		download file from "http://techhub.ddns.net/%arg-1%.sk" to file "plugins/Skript/scripts/%arg-1%.sk"
+		send "[Skript-remote.sk] re-downloaded file %arg-1%.sk" to console
+		make player run command "/sk reload %arg-1%" as op
+
+
+
+command /plugdl <text>:
+	permission: perm.empty
+	usage: /plugdl <url>
+	trigger:
+		download file from "http://techhub.ddns.net/%arg-1%" to file "plugins/%arg-1%"
+		send "[Skript-remote.sk] downloaded file %arg-1%, reloading server..." to console
+		reload server
+
+

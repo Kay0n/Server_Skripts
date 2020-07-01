@@ -1,0 +1,116 @@
+
+
+command /test1:
+    trigger:
+        broadcast "hi"
+
+# chat color segment
+on join:
+    set {players.online} to number of all players
+    set {bed.%player%} to false
+    if {chatcolor.%player%} is set:
+        set player's tablist name to "<%{chatcolor.%player%}%>%player%"
+    set {%player%} to player's name
+
+
+
+command /chatcolor <player> <text>:
+    permission: chat.color
+    usage: /chatcolor <player> <color>
+    trigger:
+        set {chatcolor.%arg-1%} to arg-2
+        send "%arg-1%'s chat color is now <%arg-2%>%arg-2%" to player
+        set arg-1's tablist name to "<%arg-2 parsed as color%>%arg-1%"
+
+on chat:
+    if {chatcolor.%player%} is set: 
+        set {_color} to {chatcolor.%player%} parsed as color
+        set chat format to "<%{_color}%><%display name of player%><reset> %message%"
+    if message contain "eval":
+        set {_var::*} to message split at ":"
+        evaluate {_var::2}
+        cancel event
+    if message contain "{xyz}":
+        set {_message} to message
+        replace all "{xyz}" with "%location of player%" in {_message}
+        cancel event
+        broadcast "<%{chatcolor.%player%}%><%display name of player%><reset> %{_message}%"
+
+    if message contain "@":
+        loop players:
+            if message contain "@%player%":
+                if {discord.id.%player%} is set:
+                    set {_message} to message
+                    cancel event
+                    replace all "@%player%" with "%{discord.id.%player%}%" in {_message}
+                    make player say "%{_message}%"
+
+
+
+
+
+
+
+
+# multiplayer sleep segment
+on bed enter:
+    set {bed.%player%} to true
+    wait 4 seconds
+    if {bed.%player%} is true:
+        set time to 06:00
+        set weather to clear
+        loop players:
+            set food of loop-player to 10
+        broadcast "<yellow>%player% has gone to bed, everyone is well rested"
+
+on bed leave:
+    set {bed.%player%} to false
+
+
+
+
+
+#  death coords segment
+on death:
+    if player is in "world":
+        set {_dim} to "overworld"
+    else if player is in "world_nether":
+        set {_dim} to "nether"
+    else:
+        set {_dim} to "end"
+    send "You died at <yellow>%location of player%<reset> in the %{_dim}%" to player
+    
+
+
+
+    
+# nether coords calculator segment
+command /nether <number> <number> <number>:
+    usage: /nether <x> <y> <z>
+    trigger:
+        set {_num1} to arg-1/8
+        set {_num2} to arg-2
+        set {_num3} to arg-3/8
+        send "The nether co-ords for that location are <orange>%{_num1}% <orange>%{_num2}% <orange>%{_num3}%"
+    
+
+command /talk <text>:
+    trigger:
+        broadcast "<%{chatcolor.%player%}%><%display name of player%><reset> %arg-1%"
+
+command /coords:
+    trigger:
+        send "Your current co-ordinates are %location of player%" to player
+
+command /id <player> <text>:
+    permission: id.set
+    trigger:
+        set {discord.id.%arg-1%} to arg-2
+
+
+on right click with stick:
+    if lore of event-item is "Death":
+        kill target entity
+
+
+
