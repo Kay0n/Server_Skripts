@@ -1,21 +1,30 @@
 
 
 command /skload <text>:
-	usage: /skload <script>
+	usage: /skload <script name>
+	description: pulls file from repo kay0n/Skripts and reloads script
 	trigger:
 		delete file "plugins/Skript/scripts/%arg-1%.sk"
-		download file from "http://techhub.ddns.net/%arg-1%.sk" to file "plugins/Skript/scripts/%arg-1%.sk"
+		download file from "https://raw.githubusercontent.com/Kay0n/Skripts/master/%arg-1%.sk" to file "plugins/Skript/scripts/%arg-1%.sk"
 		send "[Skript-remote.sk] re-downloaded file %arg-1%.sk" to console
-		make player run command "/sk reload %arg-1%" as op
+		if player is set:
+			make player run command "/sk reload %arg-1%" as op
+		else:
+			execute console command "/sk reload %arg-1%"
 
 
 
-command /plugdl <text>:
+command /plugdl <text> <text>:
 	permission: perm.empty
-	usage: /plugdl <url>
+	usage: /plugdl <url> <filename.ext>
 	trigger:
-		download file from "http://techhub.ddns.net/%arg-1%" to file "plugins/%arg-1%"
-		send "[Skript-remote.sk] downloaded file %arg-1%, reloading server..." to console
+		download file from arg-1 to file "plugins/%arg-2%"
+		send "[Skript-remote.sk] downloaded file %arg-2% to plugin folder, reloading server..." to console
 		reload server
+		
+		
+command /kek:
+	trigger:
+		broadcast "proof of acceptance"
 
 
