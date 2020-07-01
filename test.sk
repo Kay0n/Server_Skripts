@@ -1,4 +1,0 @@
-command /work:
-	trigger:
-		broadcast "YES!!!"
-    
