@@ -1,0 +1,65 @@
+
+
+# calculates nether co-ordinates from overwrold co-ords
+command /nether <number> <number> <number>:
+	usage: /nether <x> <y> <z>
+	trigger:
+		set {_num1} to arg-1/8
+		set {_num2} to arg-2
+		set {_num3} to arg-3/8
+		send "The nether co-ords for that location are <orange>%{_num1}% <orange>%{_num2}% <orange>%{_num3}%"
+	
+	
+# sends player current coords
+command /coords:
+	trigger:
+		send "Your current co-ordinates are %location of player%" to player
+
+
+#  death coords segment
+on death:
+	if player is in "world":
+		set {_dim} to "overworld"
+	else if player is in "world_nether":
+		set {_dim} to "nether"
+	else:
+		set {_dim} to "end"
+	send "You died at <yellow>%location of player%<reset> in the %{_dim}%" to player
+	
+
+# just a thing
+on right click with stick:
+	if lore of event-item is "Death":
+		kill target entity
+
+on any movement:
+	if {lock.active} is true:
+		cancel event
+
+
+
+command /lock <text>:
+	usage: /lock <setpos|on|off>
+	permission: perm.lock
+	trigger:
+		if arg-1 is "setpos":
+			set {lock.pos} to location of player
+			send "<green>lock location set to %location of player%"
+		else if arg-1 is "on":
+			if {lock.pos} is set:
+				set {lock.active} to true
+				teleport all players to {lock.pos}
+				send "<green>Lock activated"
+			else:
+				send "<red>A lock postition has not been set"
+			
+		else if arg-1 is "off":
+			set {lock.active} to false
+			send "<green>Lock deactivated"
+		else:
+			send "<red>The correct usage of this command is <yellow>/lock <setloc|on|off>" to player
+
+
+
+
+
