@@ -1,0 +1,18 @@
+
+
+on join:
+	set {bed.%player%} to false
+	teleport player to player
+
+# multiplayer sleep segment
+on bed enter:
+	set {bed.%player%} to true
+	wait 4 seconds
+	if {bed.%player%} is true:
+		set time to 06:00
+		set weather to clear
+		set food of player to 10
+		broadcast "<yellow>%player% has gone to bed"
+
+on bed leave:
+	set {bed.%player%} to false

@@ -1,12 +1,21 @@
+on load:
+	# url - url for directory of file (has to be raw file)
+	# path - directory of script folder from root
+	set {url} to "https://raw.githubusercontent.com/Kay0n/Skripts/master/"
+	set {path} to "plugins/Skript/scripts/"
 
 
+# downloads and reloads script from {url}
 command /skload <text>:
+
+	permission: remote.load
 	usage: /skload <script name>
-	description: pulls file from repo kay0n/Skripts and reloads script
+	description: pulls file from {url} to {path} and reloads script
 	trigger:
-		delete file "plugins/Skript/scripts/%arg-1%.sk"
-		download file from "https://raw.githubusercontent.com/Kay0n/Skripts/master/%arg-1%.sk" to file "plugins/Skript/scripts/%arg-1%.sk"
-		send "[Skript-remote.sk] re-downloaded file %arg-1%.sk" to console
+		delete file "%{path}%%arg-1%.sk"
+		download file from "%{url}%%arg-1%.sk" to file "%{path}%%arg-1%.sk"
+
+	
 		if player is set:
 			make player run command "/sk reload %arg-1%" as op
 		else:
@@ -14,12 +23,20 @@ command /skload <text>:
 
 
 
+# donwloads plugin and reloads server
 command /plugdl <text> <text>:
-	permission: perm.empty
+	permission: remote.dl
 	usage: /plugdl <url> <filename.ext>
 	trigger:
 		download file from arg-1 to file "plugins/%arg-2%"
 		send "[Skript-remote.sk] downloaded file %arg-2% to plugin folder, reloading server..." to console
 		reload server
+
+# deletes specified file (working dir is server root)
+command /delfile <text>:
+	permission: remote.del
+	usage: /delfile <pathtofile>
+	trigger:
+		delete file "%arg-1%"
 
 

