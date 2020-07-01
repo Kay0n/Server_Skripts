@@ -1,7 +1,7 @@
 on load:
 	# url - url for directory of file (has to be raw file)
 	# path - directory of script folder from root
-	set {url} to "https://raw.githubusercontent.com/Kay0n/Skripts/master/"
+	set {url} to "https://raw.githubusercontent.com/Kay0n/Skripts/master/scripts/"
 	set {path} to "plugins/Skript/scripts/"
 
 
