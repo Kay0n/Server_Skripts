@@ -21,10 +21,5 @@ command /plugdl <text> <text>:
 		download file from arg-1 to file "plugins/%arg-2%"
 		send "[Skript-remote.sk] downloaded file %arg-2% to plugin folder, reloading server..." to console
 		reload server
-		
-		
-command /kek:
-	trigger:
-		broadcast "proof of acceptance"
 
 
