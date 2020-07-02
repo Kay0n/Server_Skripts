@@ -1,19 +1,20 @@
 on load:
-	# url - url for directory of file (has to be raw file)
+	# url - url for directory of file from root (has to be raw file)
 	# path - directory of script folder from root
-	set {url} to "https://raw.githubusercontent.com/Kay0n/Skripts/master/scripts/"
-	set {path} to "plugins/Skript/scripts/"
+	set {url.script} to "https://raw.githubusercontent.com/Hyperfresh8080/CA-Minecraft-Server/master/plugins/Skript/scripts/"
+	set {url.plugin} to "https://raw.githubusercontent.com/Hyperfresh8080/CA-Minecraft-Server/master/plugins/"
+	set {path.script} to "plugins/Skript/scripts/"
 
 
-# downloads and reloads script from {url}
+
+# downloads and reloads script from {url.script}
 command /skload <text>:
-
 	permission: remote.load
-	usage: /skload <script name>
-	description: pulls file from {url} to {path} and reloads script
+	usage: /skload <script-name>
+	description: pulls file from {url.script} to {path.script} and reloads script
 	trigger:
-		delete file "%{path}%%arg-1%.sk"
-		download file from "%{url}%%arg-1%.sk" to file "%{path}%%arg-1%.sk"
+		delete file "%{path.script}%%arg-1%.sk"
+		download file from "%{url.script}%%arg-1%.sk" to file "%{path.script}%%arg-1%.sk"
 
 	
 		if player is set:
@@ -24,16 +25,18 @@ command /skload <text>:
 
 
 # donwloads plugin and reloads server
-command /plugdl <text> <text>:
-	permission: remote.dl
-	usage: /plugdl <url> <filename.ext>
+command /plugdl <text>:
+	description: pulls file from github, reloads server
+	permission: remote.plug
+	usage: /plugdl <filename.ext>
 	trigger:
-		download file from arg-1 to file "plugins/%arg-2%"
-		send "[Skript-remote.sk] downloaded file %arg-2% to plugin folder, reloading server..." to console
+		download file from {url.plugin} to file "plugins/%arg-1%"
+		send "[Skript-remote.sk] downloaded file %arg-1% to plugin folder, reloading server..." to console
 		reload server
 
 # deletes specified file (working dir is server root)
 command /delfile <text>:
+	description: deletes file at specified path
 	permission: remote.del
 	usage: /delfile <pathtofile>
 	trigger:
