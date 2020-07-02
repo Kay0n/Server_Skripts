@@ -9,7 +9,7 @@ command /chatcolor <text>:
 			send "That is not a valid color, possible colors are:", "<red>red, <light red>light red, <purple>purple, <light purple>light purple, <blue>blue, <light blue>light blue, <aqua>aqua, <light cyan>light cyan, <green>green, <lime>lime, <orange>orange, <yellow>yellow, <white>white, <grey>grey, <dark grey>dark grey, <black>black" to player
 		else:
 			set {chatcolor.%arg-1%} to arg-1
-			send Your chat color is now "<%arg-1%>%arg-1%" to player
+			send "Your chat color is now <%arg-1%>%arg-1%" to player
 			set arg-1's tablist name to "<%arg-1%>%arg-1%"
 
 
