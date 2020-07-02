@@ -12,7 +12,7 @@ on bed enter:
 		set time to 06:00
 		set weather to clear
 		set food of player to 10
-		broadcast "<yellow>%player% has gone to bed"
+		broadcast "<yellow>%player% has gone to bed. Sweet Dreams!"
 
 on bed leave:
 	set {bed.%player%} to false

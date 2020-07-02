@@ -1,15 +1,14 @@
 on load:
 	# url - url for directory of file from root (has to be raw file)
 	# path - directory of script folder from root
-	set {url.script} to "https://raw.githubusercontent.com/Hyperfresh8080/CA-Minecraft-Server/master/plugins/Skript/scripts/"
-	set {url.plugin} to "https://raw.githubusercontent.com/Hyperfresh8080/CA-Minecraft-Server/master/plugins/"
+	set {url.script} to "https://raw.githubusercontent.com/Kay0n/plugins/master/scripts/"
 	set {path.script} to "plugins/Skript/scripts/"
 
 
 
 # downloads and reloads script from {url.script}
 command /skload <text>:
-	permission: remote.load
+	permission: remote.skload
 	usage: /skload <script-name>
 	description: pulls file from {url.script} to {path.script} and reloads script
 	trigger:
@@ -24,22 +23,25 @@ command /skload <text>:
 
 
 
-# donwloads plugin and reloads server
-command /plugdl <text>:
-	description: pulls file from github, reloads server
-	permission: remote.plug
-	usage: /plugdl <filename.ext>
-	trigger:
-		download file from {url.plugin} to file "plugins/%arg-1%"
-		send "[Skript-remote.sk] downloaded file %arg-1% to plugin folder, reloading server..." to console
-		reload server
+
 
 # deletes specified file (working dir is server root)
-command /delfile <text>:
+command /rm-file <text>:
 	description: deletes file at specified path
 	permission: remote.del
-	usage: /delfile <pathtofile>
+	usage: /rm-file <pathtofile>
 	trigger:
-		delete file "%arg-1%"
+		delete file arg-1
+		send "[Skript-remote.sk] deleted file %arg-1%" to console
+
+# downloads specified file from url (working dir is server root)
+command /dl-file <text> <text>:
+	description: deletes file at specified path
+	permission: remote.download
+	usage: /dl-file <raw_url> <path/to/file.ext>
+	trigger:
+		download file from arg-1 to file arg-2
+		send "[Skript-remote.sk] donwloaded file from %arg-1% to %arg-2%" to console
+
 
 
