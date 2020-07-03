@@ -16,6 +16,8 @@ command /chatcolor <text>:
 
 
 on join:
+	if {chatcolor.%player%} is not set:
+		set {chatcolor.%player%} to "white"
 	if {chatcolor.%player%} is set:
 		set player's tablist name to "<%{chatcolor.%player%}%>%player%"
 	set {%player%} to player's name
@@ -30,6 +32,6 @@ on chat:
 		cancel event
 	if message contain "{xyz}":
 		set {_message} to message
-		replace all "{xyz}" with "%location of player%" in {_message}
+		replace all "{xyz}" with "<yellow>%location of player%<reset>" in {_message}
 		cancel event
 		make player say "%{_message}%"
