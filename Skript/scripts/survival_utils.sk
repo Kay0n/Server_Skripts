@@ -32,6 +32,28 @@ on right click with stick:
 	if lore of event-item is "Death":
 		kill target entity
 
+
+on any movement:
+	set {afk.time.%player%} to 30
+	if {afk.boolean.%player%} is true:
+		set {afk.boolean.%player%} to false
+		set player's tablist name to "<%{chatcolor.%player%}%>%player%"
+
+
+every 1 second in "world":
+	loop players:
+		remove 1 from {afk.time.%loop-player%}
+		if {afk.time.%loop-player%} is less than 1:
+			set {afk.boolean.%loop-player%} to true
+			set loop-player's tablist name to "<grey>%loop-player%"
+
+
+
+
+
+
+
+
 on any movement:
 	if {lock.active} is true:
 		cancel event
