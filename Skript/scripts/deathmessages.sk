@@ -1,0 +1,162 @@
+
+on load:
+	clear {dm.attack_player::*}
+	add "$player was slaughtered by $attacker" to {dm.attack_player::*}
+	add "$player was bested by $attacker" to {dm.attack_player::*}
+	add "$attacker is obviously better at pvp than $player" to {dm.attack_player::*}
+	add "$player was beaten to death by $attacker" to {dm.attack_player::*}
+	add "$player was squashed by $attacker" to {dm.attack_player::*}
+	add "$player was crushed by $attacker" to {dm.attack_player::*}
+	add "$player died to $attacker" to {dm.attack_player::*}
+	add "$player was killed by $attacker" to {dm.attack_player::*}
+	add "$player shouldn't have messed with $attacker" to {dm.attack_player::*}
+	clear {dm.attack_mob::*}
+	add "$player was killed by $attacker" to {dm.attack_mob::*}
+	add "$player was slaughtered by $attacker" to {dm.attack_mob::*}
+	add "$player was crushed by $attacker" to {dm.attack_mob::*}
+	add "$player died to $attacker" to {dm.attack_mob::*}
+	add "$player didn't want to live in the same world as $attacker" to {dm.attack_mob::*}
+	clear {dm.potion::*}
+	add "$player was killed with magic" to {dm.potion::*}
+	add "$player died to witchcraft" to {dm.potion::*}
+	add "$player was killed by a toxic concoction" to {dm.potion::*}
+	add "$player was murdered with a magical draught" to {dm.potion::*}
+	add "$player was murdered with potions" to {dm.potion::*}
+	clear {dm.fall::*}
+	add "$player fell off a cliff" to {dm.fall::*}
+	add "$player was afraid of heights" to {dm.fall::*}
+	add "$player fell from a great height" to {dm.fall::*}
+	add "$player broke all their bones after a fall" to {dm.fall::*}
+	add "$player plummeted to their death" to {dm.fall::*}
+	clear {dm.burn::*}
+	add "$player was burned to death" to {dm.burn::*}
+	add "$player may have been a witch" to {dm.burn::*}
+	add "$player got a bit too hot" to {dm.burn::*}
+	add "$player may have been a witch" to {dm.burn::*}
+	add "$player was feeling cold" to {dm.burn::*}
+	add "$player was roasted alive" to {dm.burn::*}
+	clear {dm.lava::*}
+	add "$player saw lava as diamonds" to {dm.lava::*}
+	add "$player found a hot tub" to {dm.lava::*}
+	add "$player tried to swim in lava" to {dm.lava::*}
+	add "$player was melted by lava" to {dm.lava::*}
+	add "$player fell into lava" to {dm.lava::*}
+	add "$player really likes lava" to {dm.lava::*}
+	clear {dm.drown::*}
+	add "$player couldnt swim" to {dm.drown::*}
+	add "$player's body drifts with the fish" to {dm.drown::*}
+	add "$player forgot to breath" to {dm.drown::*}
+	add "$player was not a mermaid" to {dm.drown::*}
+	add "$player drowned" to {dm.drown::*}
+	add "$player ran out of air" to {dm.drown::*}
+	clear {dm.bexplode::*}
+	add "$player was playing with dynamite" to {dm.bexplode::*}
+	add "$player was blown to bits" to {dm.bexplode::*}
+	add "$player exploded" to {dm.bexplode::*}
+	add "$player went BOOM!" to {dm.bexplode::*}
+	add "$player was decimated by explosives" to {dm.bexplode::*}
+	add "$player blew up" to {dm.bexplode::*}
+	clear {dm.eexplode::*}
+	add "A creeper snuck up on $player" to {dm.eexplode::*}
+	add "$player was killed by a creeper" to {dm.eexplode::*}
+	add "$player was blown to bits by a creeper" to {dm.eexplode::*}
+	add "$player doesnt like creepers" to {dm.eexplode::*}
+	add "Creeper kamikazied $player" to {dm.eexplode::*}
+	add "$player really wasn't liked by a creeper" to {dm.eexplode::*}
+	clear {dm.lightning::*}
+	add "$player was smitten by Zeus" to {dm.lightning::*}
+	add "$player was quite conductive" to {dm.lightning::*}
+	add "$player likes electricity" to {dm.lightning::*}
+	clear {dm.projectile::*}
+	add "$attacker sniped $player" to {dm.projectile::*}
+	add "$attacker killed $player from range" to {dm.projectile::*}
+	add "$player was brought down by $attacker" to {dm.projectile::*}
+	add "$player was shot by $attacker" to {dm.projectile::*}
+	add "$player was shot" to {dm.projectile::*}
+	add "$player met with a sharp projectile" to {dm.projectile::*}
+	add "$player should have used a sheild" to {dm.projectile::*}
+	add "$player was impaled" to {dm.projectile::*}
+	clear {dm.starve::*}
+	add "$player was a bit too hungry" to {dm.starve::*}
+	add "$player ran out of food" to {dm.starve::*}
+	add "$player was malnourished" to {dm.starve::*}
+	add "$player starved to death" to {dm.starve::*}
+	clear {dm.void::*}
+	add "$player fell into the void" to {dm.void::*}
+	add "$player fell out of the world" to {dm.void::*}
+	add "$player was consumed by the void" to {dm.void::*}
+	add "$player became nothing" to {dm.void::*}
+	add "$player stoped existing" to {dm.void::*}
+	add "$player threw themselves into oblivion" to {dm.void::*}
+	add "$player just stoped" to {dm.void::*}
+
+
+
+
+
+
+
+	
+on death of player:
+	if damage cause is potion:
+		set {_list::*} to {dm.potion::*}
+		set death message to setdm(victim,{_list::*})
+	else if damage cause is fall:
+		set {_list::*} to {dm.fall::*}
+		set death message to setdm(victim,{_list::*})
+	else if damage cause is burning:
+		if block at player is lava:
+			set {_list::*} to {dm.lava::*}
+		else:
+			set {_list::*} to {dm.burn::*}
+		set death message to setdm(victim,{_list::*})
+	else if damage cause is lava:
+		set {_list::*} to {dm.lava::*}
+		set death message to setdm(victim,{_list::*})
+	else if damage cause is drown:
+		set {_list::*} to {dm.drown::*}
+		set death message to setdm(victim,{_list::*})
+	else if damage cause is attack:
+		if attacker is player:
+			set {_list::*} to {dm.attack_player::*}
+			set death message to setdm(victim,{_list::*},attacker)
+		else:
+			set {_list::*} to {dm.attack_mob::*}
+			set death message to setdm(victim,{_list::*},attacker)
+	else if damage cause is entity explosion:
+		if attacker is a creeper:
+			set {_list::*} to {dm.eexplode::*}
+			set death message to setdm(victim,{_list::*})
+		else:
+			set {_list::*} to {dm.bexplode::*}
+			set death message to setdm(victim,{_list::*})
+	else if damage cause is lightning:
+		set {_list::*} to {dm.lightning::*}
+		set death message to setdm(victim,{_list::*})
+	else if death message contain "was shot by":
+		set {_list::*} to {dm.projectile::*}
+		set death message to setdm(victim,{_list::*},attacker)
+	else if damage cause is starvation:
+		set {_list::*} to {dm.starve::*}
+		set death message to setdm(victim,{_list::*})
+	else if death message contain "fell out of the world":
+		set {_list::*} to {dm.void::*}
+		set death message to setdm(victim,{_list::*})
+
+
+
+function setdm(v: player, list: objects, a: object = 0) :: string:
+	set {_len} to size of {_list::*}
+	set {_num} to a random integer between 1 and {_len}
+	set {_dm} to {_list::%{_num}%}
+	replace "$player" with "%{_v}%" in {_dm}
+	replace "$attacker" with "%{_a}%" in {_dm}
+	return {_dm}
+	stop
+
+
+	
+
+
+
+
