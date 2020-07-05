@@ -1,5 +1,6 @@
 on projectile hit:
-	if name of shooter's tool is "Adminsbane"
-		if victim's gamemmode is creative:
-			kill victims
+	broadcast "hit"
+	loop players in radius 3 of event-location:
+		if gamemode of loop-player is creative:
+			kill loop-player
 
