@@ -89,12 +89,6 @@ on load:
 	add "$player became nothing" to {dm.void::*}
 	add "$player stoped existing" to {dm.void::*}
 	add "$player threw themselves into oblivion" to {dm.void::*}
-	add "$player just stoped" to {dm.void::*}
-	clear {dm.named::*}
-	add "$player was slaughted with $item by $attacker" to {dm.named::*}
-	add "$attacker ended $player with $item" to {dm.named::*}
-	add "$player was slain by $attacker using $item" to {dm.named::*}
-	add "$attacker, weilding $item, murdered $player" to {dm.named::*}
 
 
 
@@ -106,7 +100,7 @@ on load:
 	
 on death of player:
 	set {_dmcheck} to death message
-	if {_dmcheck} contain "using":
+	if {_dmcheck} contain "using":	
 		exit trigger
 
 	if damage cause is potion:
