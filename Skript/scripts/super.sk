@@ -1,6 +1,10 @@
 on projectile hit:
-	broadcast "hit"
 	loop players in radius 3 of event-location:
 		if gamemode of loop-player is creative:
 			kill loop-player
+
+
+on shoot:
+	if name of shooter's tool is "Grav":
+		set nbt of event-entity to "{NoGravity:1b}"
 

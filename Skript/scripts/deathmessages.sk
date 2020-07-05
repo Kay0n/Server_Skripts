@@ -107,9 +107,6 @@ on load:
 on death of player:
 	set {_dmcheck} to death message
 	if {_dmcheck} contain "using":
-		set {item::*} to {_dmcheck} split at "using"
-		set {_list::*} to {dm.named::*}
-		set death message to setdm(victim,{_list::*},attacker,{item::2})
 		exit trigger
 
 	if damage cause is potion:
@@ -159,7 +156,7 @@ on death of player:
 
 
 
-function setdm(v: player, list: objects, a: object = 0, i: object = 0) :: string:
+function setdm(v: player, list: objects, a: object = 0) :: string:
 	set {_len} to size of {_list::*}
 	set {_num} to a random integer between 1 and {_len}
 	set {_dm} to {_list::%{_num}%}
