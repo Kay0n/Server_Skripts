@@ -1,0 +1,5 @@
+on projectile hit:
+	if name of shooter's tool is "Adminsbane"
+		if victim's gamemmode is creative:
+			kill victims
+
