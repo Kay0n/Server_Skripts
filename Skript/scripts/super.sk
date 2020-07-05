@@ -1,4 +1,18 @@
 
 on shoot:
 	if name of shooter's tool is "AntiGravity":
-		set nbt of event-entity to "{NoGravity:1b,TagTest:1b}"
+		set nbt of event-entity to "{NoGravity:1b}"
+		wait 40 seconds
+		kill event-entity
+
+
+
+on load:
+	clear {silent::*}
+on damage:
+	if name of attacker's tool is "Silence":
+		add victim to {silent::*}
+on target:
+	loop {silent::*}:
+		if event-entity is loop-value:
+			cancel event
