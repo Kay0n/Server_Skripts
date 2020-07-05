@@ -28,6 +28,7 @@ on load:
 	add "$player fell from a great height" to {dm.fall::*}
 	add "$player broke all their bones after a fall" to {dm.fall::*}
 	add "$player plummeted to their death" to {dm.fall::*}
+	add "$player forgot their parachute" to {dm.fall::*}
 	clear {dm.burn::*}
 	add "$player was burned to death" to {dm.burn::*}
 	add "$player may have been a witch" to {dm.burn::*}
@@ -89,6 +90,12 @@ on load:
 	add "$player stoped existing" to {dm.void::*}
 	add "$player threw themselves into oblivion" to {dm.void::*}
 	add "$player just stoped" to {dm.void::*}
+	clear {dm.named::*}
+	add "$player was slaughted with $item by $attacker" to {dm.named::*}
+	add "$attacker ended $player with $item" to {dm.named::*}
+	add "$player was slain by $attacker using $item" to {dm.named::*}
+	add "$attacker, weilding $item, murdered $player" to {dm.named::*}
+
 
 
 
@@ -98,6 +105,13 @@ on load:
 
 	
 on death of player:
+	set {_dmcheck} to death message
+	if {_dmcheck} contain "using":
+		set {item::*} to {_dmcheck} split at "using"
+		set {_list::*} to {dm.named::*}
+		set death message to setdm(victim,{_list::*},attacker,{item::2})
+		exit trigger
+
 	if damage cause is potion:
 		set {_list::*} to {dm.potion::*}
 		set death message to setdm(victim,{_list::*})
@@ -145,12 +159,13 @@ on death of player:
 
 
 
-function setdm(v: player, list: objects, a: object = 0) :: string:
+function setdm(v: player, list: objects, a: object = 0, i: object = 0) :: string:
 	set {_len} to size of {_list::*}
 	set {_num} to a random integer between 1 and {_len}
 	set {_dm} to {_list::%{_num}%}
 	replace "$player" with "%{_v}%" in {_dm}
 	replace "$attacker" with "%{_a}%" in {_dm}
+	replace "$item" with "%{_i}%" in {_dm}
 	return {_dm}
 	stop
 
