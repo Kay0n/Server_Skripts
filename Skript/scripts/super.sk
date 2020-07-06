@@ -23,7 +23,7 @@ on load:
 
 on right click with stick:	
 	if name of event-item is "Link":
-		set {_target} to clicked entity
+		set {_target} to target entity
 		if {_target} is set:
 			if player is sneaking:
 				if {walker} is alive:
