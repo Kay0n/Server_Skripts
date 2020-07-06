@@ -45,7 +45,7 @@ every 10 seconds in "world":
 		remove 10 from {afk.time.%loop-player%}
 		if {afk.time.%loop-player%} is less than 1:
 			set {afk.boolean.%loop-player%} to true
-			set loop-player's tablist name to "<grey>%loop-player%"
+			set loop-player's tablist name to "<dark grey>%loop-player%"
 
 
 
@@ -85,3 +85,19 @@ command /lock <text>:
 
 
 
+command /track <number> <number> <number>:
+	usage: /track <x> <y> <z>
+	trigger:
+		set {compass.%player%} to location at arg-1, arg-2, arg-3
+		if player's inventory does not contain 1 compass:
+			give player 1 compass
+		set player's compass target to {compass.%player%}
+		send "Now tracking <yellow>%{compass.%player%}%" to player
+
+on right click with compass:
+	if player is sneaking:
+		if player's inventory does not contain 1 compass:
+			give player 1 compass
+		set {compass.%player%} to location of player
+		set player's compass target to {compass.%player%}
+		send "Now tracking <yellow>%{compass.%player%}%" to player

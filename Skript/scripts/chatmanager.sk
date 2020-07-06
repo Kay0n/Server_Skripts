@@ -6,7 +6,9 @@ command /chatcolor <text>:
 	usage: /chatcolor <color>
 	trigger:
 		if arg-1 parsed as color is not color:
-			send "That is not valid, possible colors are:" and "<red>red, <light red>light red, <purple>purple, <light purple>light purple, <blue>blue, <light blue>light blue, <aqua>aqua, <light cyan>light cyan, <green>green, <lime>lime, <orange>orange, <yellow>yellow, <white>white, <grey>grey, <dark grey>dark grey, <black>black" to player
+			send "That is not valid, possible colors are:" and "<red>red, <light red>light red, <purple>purple, <light purple>light purple, <blue>blue, <light blue>light blue, <aqua>aqua, <light cyan>light cyan, <green>green, <lime>lime, <orange>orange, <yellow>yellow, <white>white, <grey>grey, <black>black" to player
+		else if arg-1 is "dark grey":
+			send "That color is reserved. Please choose another" to player
 		else:
 			set {chatcolor.%player%} to arg-1
 			send "Your chat color is now <%arg-1%>%arg-1%" to player
