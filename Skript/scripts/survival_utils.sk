@@ -34,7 +34,7 @@ on right click with stick:
 
 
 on any movement:
-	set {afk.time.%player%} to 40
+	set {afk.time.%player%} to 200
 	if {afk.boolean.%player%} is true:
 		set {afk.boolean.%player%} to false
 		set player's tablist name to "<%{chatcolor.%player%}%>%player%"
