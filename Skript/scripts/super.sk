@@ -16,3 +16,39 @@ on target:
 	loop {silent::*}:
 		if event-entity is loop-value:
 			cancel event
+
+
+on load:
+	clear {walkers::*}
+
+on right click with stick:	
+	if name of event-item is "Link":
+		set {_target} to clicked entity
+		if {_target} is set:
+			if player is sneaking:
+				if {walker} is alive:
+					set {_walker} to {walker}
+					set {walker} to 0
+					add {_walker} to {walkers::*}
+					send "<yellow>Target locked" to player
+					while {_walker} and {_target} is alive:
+						make {_walker} pathfind to location of {_target} with speed 1
+						set target of {_walker} to {_target}
+						wait 2 ticks
+
+					remove {_walker} from {walkers::*}
+					
+				else:
+					send "<red>No Link companion" to player
+					exit
+			else:
+				set {error} to false
+				loop {walkers::*}:
+					if {_target} is loop-value:
+						set {error} to true
+						
+				if {error} is false:
+					send "<yellow>Walker set" to player
+					set {walker} to {_target}
+				else:
+					send "<red>This entity is already a walker" to player
