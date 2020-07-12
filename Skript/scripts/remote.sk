@@ -36,7 +36,7 @@ command /rm-file <text>:
 
 # downloads specified file from url (working dir is server root)
 command /dl-file <text> <text>:
-	description: deletes file at specified path
+	description: downloads file from url at specified path
 	permission: remote.download
 	usage: /dl-file <raw_url> <path/to/file.ext>
 	trigger:
