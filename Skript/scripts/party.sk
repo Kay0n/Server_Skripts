@@ -93,9 +93,7 @@ command /party <text> <text=>:
 
 on chat:
 	if {pchat.%player%} is true:
-		broadcast "check1"
 		if {party.%player%.user} is set:
-			broadcast "check2"
 			set {_msg} to "<green>[party]<reset><%player%> %message%"
 			cancel event
 			set {_p} to {party.%player%.user}
