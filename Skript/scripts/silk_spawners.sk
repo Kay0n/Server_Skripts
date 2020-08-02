@@ -5,6 +5,7 @@ break of mob spawner:
 		set {_spawner.name::*} to {spawner.entity::2} split at ":"
 		set {_spawner.name::2} to capitalize({_spawner.name::2})
 		drop spawner named "<yellow>%{_spawner.name::2}%" with lore {spawner.entity::2}
+		cancel the experience drops
 
 
 on place of spawner:
