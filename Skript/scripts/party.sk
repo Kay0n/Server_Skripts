@@ -1,0 +1,110 @@
+
+command /test:
+	trigger:
+		loop {party.%player%.members::*}:
+			broadcast "%loop-value%"
+			remove loop-value from {party.%player%.members::*}
+
+command /party <text> <text=>:
+	trigger:
+		if arg-1 is "create":
+			set {party.%player%.name} to arg-2
+			add player to {party.%player%.members::*}
+			add player to {partylist::*}
+			set {party.%player%.user} to player
+			send "<green>Your party %{party.%player%.name}%<green> has been created!"
+
+		else if arg-1 contain "invite":
+			loop {partylist::*}:
+				if loop-value is player:
+					set {_player} to arg-2 parsed as player
+					send formatted "<yellow>You have been invited to %{party.%player%.name}% <white><cmd:/party accept %player%>[<green>accept<white>]" to {_player}
+					send "<yellow>Request sent" to player
+					add {_player} to {party.%player%.invitelist::*}
+					wait 30 seconds
+					remove {_player} from {party.%player%.invitelist::*}
+					exit trigger
+
+			send "<red>You are not the party leader" to player
+
+		else if arg-1 contain "remove":
+			loop {partylist::*}:
+				if loop-value is player:
+					set {_player} to arg-2 parsed as player
+					if {_player} is player:
+						send "<red>You cannot remove yourself from your own party" to player
+						exit trigger
+					remove {_player} from {party.%player%.members::*}
+					partymsg("<yellow>%{_player}% was removed from the party",player)
+					send "<yellow>You have been removed from the party" to {_player}
+					exit trigger
+			send "<red>You are not the party leader" to player
+
+		else if arg-1 contain "accept":
+			set {_player} to arg-2 parsed as player
+			loop {party.%{_player}%.invitelist::*}:
+				if loop-value is player:
+					set {_cparty} to {party.%player%.user}
+					remove player from {party.%{_cparty}%.members::*}
+
+					add player to {party.%{_player}%.members::*}
+					set {party.%player%.user} to {_player}
+					send "<yellow>You have joined the party!" to player
+					partymsg("<yellow>%player% has joined the party!", {_player})
+					remove player from {party.%{_player}%.invitelist::*}
+					exit trigger
+			send "<red>Invite expired or non-existent" to player
+
+		else if arg-1 contain "list":
+			if {party.%player%.user} is not set:
+				send "<red>You are not in a party" to player
+				exit trigger
+			set {_cparty} to {party.%player%.user}
+			loop {party.%{_cparty}%.members::*}:
+				send "<aqua>%loop-value%" to player
+
+		else if arg-1 contain "delete":
+			if {party.%player%.user} is not set:
+				send "<red>You are not in a party" to player
+				exit trigger
+			loop {partylist::*}:
+				if loop-value is player:
+					loop {party.%player%.members::*}:
+						clear {party.%loop-value-2%.user}
+					partymsg("<yellow>Party disbanded",player)
+					clear {party.%player%.members::*}
+					clear {party.%player%.invitelist::*}
+					remove player from {partylist::*}
+					exit trigger
+				send "<red>You are not party leader" to player
+
+
+
+
+		else if arg-1 contain "chat":
+			if {pchat.%player%} is true:
+				send "<yellow>Party chat disabled" to player
+				set {pchat.%player%} to false
+			else:
+				send "<yellow>Party chat enabled" to player
+				set {pchat.%player%} to true
+
+
+on chat:
+	if {pchat.%player%} is true:
+		broadcast "check1"
+		if {party.%player%.user} is set:
+			broadcast "check2"
+			set {_msg} to "<green>[party]<reset><%player%> %message%"
+			cancel event
+			set {_p} to {party.%player%.user}
+			partymsg({_msg},{_p})
+
+
+
+
+function partymsg(m: text,p: player):
+	loop {party.%{_p}%.members::*}:
+		if loop-value is online:
+			send "%{_m}%" to loop-value
+
