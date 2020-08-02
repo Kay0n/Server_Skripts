@@ -6,6 +6,7 @@ command /test:
 			remove loop-value from {party.%player%.members::*}
 
 command /party <text> <text=>:
+	usage: /party <[create <party-name>]|[remove <player>]|[accept <player>]|[list]|[chat]>
 	trigger:
 		if arg-1 is "create":
 			set {party.%player%.name} to arg-2
