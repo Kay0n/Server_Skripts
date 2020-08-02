@@ -1,0 +1,4 @@
+on break:
+	if event-block is spawner:
+		if tool of player is enchanted with silk touch 1:
+			drop spawner at event-location
