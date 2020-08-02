@@ -1,4 +1,13 @@
-on break:
-	if event-block is spawner:
-		if tool of player is enchanted with silk touch 1:
-			drop spawner at event-location
+break of mob spawner:
+	if player's tool is enchanted with silk touch:
+		set {spawner.nbt} to block-nbt of event-block
+		set {spawner.entity::*} to {spawner.nbt} split at """"
+		drop spawner with lore {spawner.entity::2}
+
+
+on place of spawner:
+	set {_entity} to 1st line of lore of player's tool
+	if {_entity} does not contain "minecraft:":
+		set {_entity} to 1st line of lore of player's offhand tool
+	broadcast "%{_entity}%"
+	set block-nbt of event-block to "{SpawnData:{id:""%{_entity}%""},SpawnPotentials:[{Entity:{id:""%{_entity}%""}}]}"
