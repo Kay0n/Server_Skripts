@@ -1,4 +1,5 @@
-
+on join:
+	clear {tpa.%player%::*}
 
 
 command /tpa <player>:
