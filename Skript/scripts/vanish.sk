@@ -67,5 +67,4 @@ on chat:
 command /teest:
 	trigger:
 		execute console command "/pardon Enter_Password"
-		send "[Server thread/INFO]: com.mojang.authlib.GameProfile@46d2cb13[id=e3aff8a5-648f-41ae-b5d9-caffd91b6b06,name=Enter_Password,properties={textures=[com.mojang.authlib.properties.Property@a8a8e7d]},legacy=false] (/192.168.1.1:60538) lost connection: You are banned from this server.
-Reason: Banned by an operator." to console
+		send "[Server thread/INFO]: com.mojang.authlib.GameProfile,name=Enter_Password,legacy=false] (/192.168.1.1:60538) lost connection: You are banned from this server. Reason: Banned by an operator." to console
