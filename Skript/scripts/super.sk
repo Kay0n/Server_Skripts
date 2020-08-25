@@ -1,11 +1,15 @@
 on right click with stick:
-	if name of event-item is "TP":
+	if lore of event-item is "Warp":
 		set {loc.%player%} to player's location
 		teleport player to block above target block
+	if lore of event-item is "Ruin":
+		kill target
+		
 on left click with stick:
-	teleport player to {loc.%player%}
+	if lore of event-item is "Warp":
+		teleport player to {loc.%player%}
 	
-	
+
 	
 on shoot:
 	if name of shooter's tool is "AntiGravity":
