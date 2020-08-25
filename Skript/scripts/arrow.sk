@@ -2,7 +2,7 @@
 command /arrow:
 	permission: perm.empty
 	trigger:
-		give player arrow of swiftness with lore "Stomping"
+		give player 1 of arrow of swiftness with lore "Stomping"
 
 
 
