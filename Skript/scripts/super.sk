@@ -1,4 +1,12 @@
-
+on right click with stick:
+	if name of event-item is "TP":
+		set {loc.%player%} to player's location
+		teleport player to block above target block
+on left click with stick:
+	teleport player to {loc.%player%}
+	
+	
+	
 on shoot:
 	if name of shooter's tool is "AntiGravity":
 		set nbt of event-entity to "{NoGravity:1b}"
