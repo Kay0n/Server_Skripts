@@ -1,0 +1,123 @@
+
+command /arrow:
+	permission: perm.empty
+	trigger:
+		give player arrow of swiftness with lore "Stomping"
+
+
+
+
+on shoot:
+	shooter is player
+	"%event-projectile%" is "arrow"
+	loop all items in shooter's inventory: 
+		if loop-item is tipped arrow:
+			set {arrow.%event-projectile%} to the 1st line of the lore of loop-item
+			if {arrow.%event-projectile%} is set:
+				if tool of shooter is enchanted with infinity 1:
+					set {magical-arrow} to loop-item
+					remove 1 of {magical-arrow} from shooter
+				if offhand tool of shooter is enchanted with infinity 1:
+					set {magical-arrow} to loop-item
+					remove 1 of {magical-arrow} from shooter
+				if tool of shooter is crossbow:
+					set {arrow.%event-projectile%} to "None"
+				if offhand tool of shooter is crossbow:
+					set {arrow.%event-projectile%} to "None"
+			exit 1 loop
+
+
+
+on projectile hit:
+	if {arrow.%event-projectile%} is "Stomping":
+		loop entities in radius 10 around projectile:
+			push loop-entity upwards at speed 1.2
+		
+		exit trigger
+
+	if {arrow.%event-projectile%} is "Gravitation":
+		set {_loc} to location of projectile
+		delete event-projectile
+		loop 15 times:
+			wait 5 tick
+			loop living entities in radius 16 around {_loc}:
+				push loop-entity (direction from loop-entity to {_loc}) at speed 0.5
+		exit trigger
+		
+	if {arrow.%event-projectile%} is "Hindrance":
+		create a fake explosion at projectile
+		loop entities in radius 10 around projectile:
+			remove blindness from loop-entity
+			apply blindness to loop-entity for 15 seconds
+	if {arrow.%event-projectile%} is set:
+		if {arrow.%event-projectile%} is not "None":
+			wait 5 ticks
+			delete event-projectile
+
+on damage:
+	if projectile exists:
+		if "%event-projectile%" is "arrow":
+			if {arrow.%event-projectile%} is set:
+				if {arrow.%event-projectile%} is not "None":
+					wait 2 ticks
+					removeAllEffects(victim)
+
+
+
+			if {arrow.%event-projectile%} is "Swapping":
+				delete event-projectile
+				set {_loc} to victim's location
+				teleport victim to attacker
+				teleport attacker to {_loc}
+				exit trigger
+
+			if {arrow.%event-projectile%} is "Freezing":
+				set {_freezeloc} to location of block at victim
+				loop blocks in radius 3 around {_freezeloc}:
+					loop-block is air
+					set loop-block to ice
+				wait 5 seconds
+				loop blocks in radius 3 around {_freezeloc}:
+					loop-block is ice or water
+					set loop-block to air
+				exit trigger
+
+			if {arrow.%event-projectile%} is "Ineptitude":
+				clear {dropitems::*}
+				add victim's tool to {dropitems::*}
+				add victim's offhand tool to {dropitems::*}
+				add victim's helmet to {dropitems::*}
+				add victim's chestplate to {dropitems::*}
+				add victim's leggings to {dropitems::*}
+				add victim's boots to {dropitems::*}
+				clear victim's tool
+				clear victim's offhand tool
+				clear victim's helmet
+				clear victim's leggings
+				clear victim's chestplate
+				clear victim's boots
+				loop {dropitems::*}:
+					drop loop-value at victim
+				clear {dropitems::*}
+				exit trigger
+
+		
+function removeAllEffects(p: entity) :: text:
+	remove speed from {_p}
+	remove slowness from {_p}
+	remove haste from {_p}
+	remove mining fatigue from {_p}
+	remove strength from {_p}
+	remove instant health from {_p}
+	remove instant damage from {_p}
+	remove jump boost from {_p}
+	remove nausea from {_p}
+	remove regeneration from {_p}
+	remove resistance from {_p}
+	remove fire resistance from {_p}
+	remove water breathing from {_p}
+	remove invisibility from {_p}
+	remove blindness from {_p}
+	remove night vision from {_p}
+	remove weakness from {_p}
+	remove poison from {_p}

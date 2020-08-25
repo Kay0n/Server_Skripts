@@ -1,0 +1,64 @@
+command /price <number>:
+	trigger:
+		set {_line1} to 1st line of lore of the player's tool
+		if {_line1} is set:
+			set 3rd line of lore of the player's tool to {_line1}
+		set 1st line of lore of the player's tool to "<reset><green>Charm of Commerce"
+		set 2nd line of lore of the player's tool to "<reset><aqua>Cost: %arg-1% diamonds"
+		
+
+command /pricelock <text>:
+	trigger:
+		if arg-1 is "off":
+			set {price.lock} to false
+		else:
+			set {price.lock} to true
+
+
+
+
+on inventory click:
+	if 1st line of lore of item is "<reset><green>Charm of Commerce":
+		if {price.lock} is true:
+			buy(item,player)
+			if {buy} is false:
+				cancel event
+				set {buy} to true
+			else: 
+				set item to {enditem}
+		
+
+on drop:
+	if 1st line of lore of item is "<reset><green>Charm of Commerce":
+		if {price.lock} is true:
+			buy(item,player)
+			if {buy} is false:
+				cancel event
+				set {buy} to true
+			else: 
+				set item to {enditem}
+		
+
+
+
+function buy(i: item,p: player):
+	set {_price} to the 2nd line of lore of {_i}
+	replace every "<reset><aqua>Cost: " with "" in {_price}
+	replace every " diamonds" with "" in {_price}
+	set {_price} to {_price} parsed as number
+	loop all items in {_p}'s inventory:
+		if loop-item is diamonds:
+			set {_amount} to item amount of loop-item
+			if {_amount} >= {_price}:
+				remove {_price} of diamonds from {_p}
+				set {_line1} to the 3rd line of lore of {_i}
+				delete lore of {_i}
+				if {_line1} is set:
+					set 1st line of lore of {_i} to {_line1}
+				set {enditem} to {_i}
+				add {_price} to {profit}
+				exit trigger
+		
+	set {buy} to false
+
+
