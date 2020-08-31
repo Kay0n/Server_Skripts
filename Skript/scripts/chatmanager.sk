@@ -15,7 +15,11 @@ command /chatcolor <text>:
 			set player's tablist name to "<%arg-1%>%player%"
 
 
-
+command /clearchat:
+	aliases: /cc
+	trigger:
+		loop 300 times:
+			send " " to player
 
 on join:
 	if {chatcolor.%player%} is not set:

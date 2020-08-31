@@ -1,0 +1,90 @@
+
+on load:
+	set {lightlevel} to 11
+	set {armor.fallboots} to chainmail boots named "Cold Rubber Boots" with lore "Negates all fall damage, once"
+	set {armor.buff} to iron chestplate named "DuskBringer" with lore "Strength in the gloom"		
+	set {armor.safe} to iron helmet named "DarkShroud" with lore "Shelter from the night"
+	set {armor.dash} to iron leggings named "VoidCaller" with lore "Death from the Shadows"
+	set {armor.invis} to iron boots named "Silence" with lore "Hidden from the living"
+
+
+
+
+	clear {armor.list::*}
+	add {armor.fallboots} and {armor.buff} and {armor.safe} and {armor.dash} and {armor.invis} to {armor.list::*}
+	remove "Armor" from {custom.active::*}
+	add "Armor" to {custom.active::*}
+
+
+on damage:
+	if damage was caused by fall:
+		if lore of victim's boots contain lore of {armor.fallboots}:
+			clear victim's boots
+			cancel event
+
+	
+
+on death of mob:
+	if attacker is a player:
+		if lore of attacker's chestplate contain lore of {armor.buff}:
+			if light level at attacker is less than {lightlevel}:
+				remove speed from attacker
+				remove night vision from attacker
+				remove conduit power from attacker
+				remove haste from attacker
+				apply haste to attacker for 60 seconds
+				apply speed to attacker for 60 seconds
+				apply night vision to attacker for 60 seconds
+				apply conduit power to attacker for 60 seconds
+
+
+
+
+
+on swap hand items:
+	if lore of player's leggings contain lore of {armor.dash}:
+		if {cooldash.%player%} is not false:
+			if light level at player is less than {lightlevel}: 
+				if player is sneaking:
+					cancel event
+					teleport player 1.5 meters horizontally behind target entity
+					set {cooldash.%player%} to false
+					wait 60 seconds
+					play sound "block.note_block.pling" 
+					set {cooldash.%player%} to true
+
+
+on sneak toggle:
+	
+	if lore of player's boots contain lore of {armor.invis}:
+		if light level at player is less than {lightlevel}:
+			add 1 to {looping.invis.%player%}
+			while player is sneaking:
+				if player's level is greater than 0.5:
+					hide player from players
+					reduce the player's level by 1
+					wait 25 seconds
+				else:
+					reveal player from all players
+					exit 1 loop
+					
+				if {looping.invis.%player%} is greater than 1:
+					exit 1 loop
+				if light level at player is more than or equal to {lightlevel}:
+					reveal player from all players
+					exit 1 loop
+			remove 1 from {looping.invis.%player%}
+
+
+
+on entity target:
+	if light level at target is less than {lightlevel}:
+		if lore of target's helmet contain lore of {armor.safe}:
+			cancel event
+
+
+command /clearchat:
+	aliases: /cc
+	trigger:
+		loop 300 times:
+			send " " to player

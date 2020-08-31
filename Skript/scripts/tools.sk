@@ -159,14 +159,15 @@ on damage:
 
 	else if (victim's health - damage) < 0.1:
 		if {ringing} is not true:
-			if lore of victim's tool contain lore of {tools.tear}:
-				cancel event
-				imort(victim)	
-			if lore of victim's offhand tool contain lore of {tools.tear}:
-				if {second} is false:
+			if lore of victim's boots do not contain lore of {armor.fallboots}:
+				if lore of victim's tool contain lore of {tools.tear}:
 					cancel event
-					imort(victim)
-				set {second} to false
+					imort(victim)	
+				if lore of victim's offhand tool contain lore of {tools.tear}:
+					if {second} is false:
+						cancel event
+						imort(victim)
+					set {second} to false
 
 	
 
@@ -188,7 +189,7 @@ function imort(v: entity):
 	set {_v}'s health to 40
 	set {_v}'s food level to 40	
 	set {hunger.%{_v}%} to false
-	broadcast "&6%{_v}% was saved by God!"
+	broadcast "%{_v}% was saved by Divine Intervention"
 
 
 

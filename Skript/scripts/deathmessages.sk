@@ -75,7 +75,7 @@ on load:
 	add "$player was shot by $attacker" to {dm.projectile::*}
 	add "$player was shot" to {dm.projectile::*}
 	add "$player met with a sharp projectile" to {dm.projectile::*}
-	add "$player should have used a sheild" to {dm.projectile::*}
+	add "$player should have used a shield" to {dm.projectile::*}
 	add "$player was impaled" to {dm.projectile::*}
 	clear {dm.starve::*}
 	add "$player was a bit too hungry" to {dm.starve::*}
