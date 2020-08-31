@@ -67,6 +67,10 @@ command /custom <text> <text="empty">:
 
 			else:
 				send "<gold>Items:"
+				if arg-2 is "soul":
+					send formatted "<sgt:/soullink ><yellow>Soul Flowers" 
+
+
 				set {_num} to 1
 				loop {%arg-2%.list::*}:
 					send formatted "<cmd:/custom give {%arg-2%.list::%{_num}%}><yellow>%name of loop-value%" to player
@@ -78,3 +82,7 @@ command /custom <text> <text="empty">:
 
 
 
+command /lore <text>:
+	permission: perm.empty
+	trigger:
+		set lore of player's tool to arg-1

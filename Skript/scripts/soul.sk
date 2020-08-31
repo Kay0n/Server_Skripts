@@ -1,0 +1,98 @@
+
+on load:
+	wait 1 tick
+
+
+
+	
+	remove "Soul" from {custom.active::*}
+	add "Soul" to {custom.active::*}
+
+
+
+
+
+command /soullink <text>:
+	usage:/soullink <animal>
+	permission: perm.empty
+	trigger:
+		give player flower named "Soul Bond" with lore "Soul: %arg-1%"
+
+on skript stop:
+	loop all players:
+		set {spec-%loop-player%} to false
+		teleport {spec-animal.%loop-player%} (500 blocks below) {spec-animal.%loop-player%}
+		set loop-player's gamemode to survival
+
+on join:
+	if {spec-%player%} is true:
+		set player's gamemode to survival
+		teleport {spec-animal.%player%} (500 blocks below) {spec-animal.%player%}
+		set {spec-%player%} to false
+
+
+on place:
+	if lore of event-item contain "Soul:":
+		cancel event
+
+
+on right click:
+	if lore of event-item contain "Soul:":
+		cancel event
+		set {_temp::*} to 1st line of lore of event-item split at ":"
+		set {animal} to {_temp::2} parsed as entity type
+
+		spec(player,event-item)
+
+
+
+
+
+on sneak toggle:
+	if {spec-%player%} is true:
+		set player's gamemode to survival
+		teleport {spec-animal.%player%} (500 blocks below) {spec-animal.%player%}
+		set {spec-%player%} to false
+
+on death:
+	loop players in radius 20 of victim:
+		if victim is {spec-animal.%loop-player%}:
+			set loop-player's gamemode to survival
+			kill loop-player
+			set {spec-%loop-player%} to false
+			clear drops
+
+on teleport:
+	if {spec-%player%} is true:
+		cancel event
+		set player's spectator target to {spec-animal.%player%}
+
+
+
+on explosion:
+	if event-entity is creeper:
+		loop players:
+			if event-entity is {spec-animal.%loop-player%}:
+				set loop-player's gamemode to survival
+				kill loop-player	 
+				set {spec-%loop-player%} to false
+
+
+
+function spec(p: player,i: item):	
+	remove 1 of {_i} from {_p}
+	spawn {animal} at {_p}
+	loop entities in radius 2 of {_p}:
+		if loop-entity is {animal}:
+			set {spec-animal.%{_p}%} to loop-entity
+	set {_p}'s gamemode to spectator
+	set {_p}'s spectator target to {spec-animal.%{_p}%}
+	set {spec-%{_p}%} to true
+	while {spec-%{_p}%} is true:
+		wait 1 second
+		if {_p}'s spectator target is not {spec-animal.%{_p}%}:
+			set {_p}'s gamemode to survival
+			teleport {spec-animal.%{_p}%} (500 blocks below) {spec-animal.%{_p}%}
+			set {spec-%{_p}%} to false
+
+

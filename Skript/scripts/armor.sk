@@ -1,5 +1,6 @@
 
 on load:
+	wait 1 tick
 	set {lightlevel} to 11
 	set {armor.fallboots} to chainmail boots named "Cold Rubber Boots" with lore "Negates all fall damage, once"
 	set {armor.buff} to iron chestplate named "DuskBringer" with lore "Strength in the gloom"		
@@ -83,8 +84,3 @@ on entity target:
 			cancel event
 
 
-command /clearchat:
-	aliases: /cc
-	trigger:
-		loop 300 times:
-			send " " to player
