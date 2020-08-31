@@ -1,8 +1,13 @@
 on load:
+	clear {custom.active::*}
 	# url - url for directory of file from root (has to be raw file)
 	# path - directory of script folder from root
 	set {url.script} to "https://raw.githubusercontent.com/Kay0n/plugins/master/Skript/scripts/"
 	set {path.script} to "plugins/Skript/scripts/"
+	
+
+
+	
 
 
 
@@ -42,6 +47,34 @@ command /dl-file <text> <text>:
 	trigger:
 		download file from arg-1 to file arg-2
 		send "[Skript-remote.sk] donwloaded file from %arg-1% to %arg-2%" to console
+
+
+
+
+
+command /custom <text> <text="empty">:
+	permission: perm.empty
+	usage: Use /custom help for a list of commands
+	trigger:
+		if arg-1 is "help":
+			send "<yellow>help - displays this page" to player
+			send "<yellow>class - lists item classes, click controls"
+		else if arg-1 is "class":
+			if arg-2 is "empty":
+				send "<gold>Active Classes:"
+				loop {custom.active::*}:
+					send formatted "<cmd:/custom class %loop-value%><red>%loop-value%"
+
+			else:
+				send "<gold>Items:"
+				set {_num} to 1
+				loop {%arg-2%.list::*}:
+					send formatted "<cmd:/custom give {%arg-2%.list::%{_num}%}><yellow>%name of loop-value%" to player
+					add 1 to {_num}
+
+		else if arg-1 is "give":
+			evaluate "give player %arg-2%"
+
 
 
 

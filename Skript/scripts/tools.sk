@@ -1,0 +1,195 @@
+on load:
+	wait 1 tick
+	set {tools.aqua} to heart of the sea named "Hydrophobia" with lore "Aquarius Essence"
+	set {tools.magma} to magma cream named "Pyrophobia" with lore "Magmatic Essence"
+	set {tools.scaffolding} to wool named "Construction Materials" with lore "Scaffolding"
+	set {tools.tear} to ghast tear named "Tear of God" with lore "Grants imortality to the holder"
+	set {tools.compass} to compass named "Tracker" with lore "Tracks a location"
+	set {tools.exp} to glass bottle named "Experience Canister" with lore "Store magical essence in liquid form"
+	set {tools.trident} to trident named "Rod of Narsa" with lore "Fast Transport"
+	set {tools.bread} to bread named "Angelic Bread" with lore "Divine Sustinance"
+	set {tools.coin} to golden nugget named "Coin of Fortune" with lore "Collects Riches"
+
+
+
+
+	clear {tools.list::*}
+	add {tools.aqua} and {tools.magma} and {tools.scaffolding} and {tools.tear} and {tools.compass} and {tools.exp} and {tools.trident} and {tools.bread} and {tools.coin} to {tools.list::*}
+	remove "Tools" from {custom.active::*}
+	add "Tools" to {custom.active::*}
+
+
+
+
+
+
+
+
+
+
+
+
+on death of player:
+	set {hunger.%player%} to false
+
+
+# scaffolding script
+on place of wool:
+	if lore of player's tool is "Scaffolding":
+		add location of event-block to {scaff.%player%::*}
+	else if lore of player's offhand tool is "Scaffolding":
+		add location of event-block to {scaff.%player%::*}
+
+on break of wool:
+	loop {scaff.%player%::*}:
+		if location of event-block is loop-value:
+			clear drops
+			loop {scaff.%player%::*}:
+				set block at loop-value-2 to air
+
+
+# Essence script
+on left click:
+	if lore of event-item contain lore of {tools.aqua}:
+		remove water breathing from player
+		apply water breathing without particles to player for 20 seconds 
+		loop blocks in radius 15 around player:
+			if loop-block is water or kelp or seagrass or tall seagrass:
+				make player see loop-block as air
+	else if lore of event-item contain lore of {tools.magma}:
+		remove fire resistance from player
+		apply fire resistance  to player for 20 seconds 
+		loop blocks in radius 15 around player:
+			if loop-block is lava:
+				make player see loop-block as air
+
+
+
+
+
+on right click:
+	if lore of event-item contain lore of {tools.aqua}:
+		remove water breathing from player
+		loop blocks in radius 15 around player:
+			if loop-block is water or kelp or seagrass or tall seagrass:
+				make player see loop-block as water
+
+	else if lore of event-item contain lore of {tools.magma}:
+		remove fire resistance from player
+		extinguish player
+		loop blocks in radius 15 around player:
+			if loop-block is lava:
+				make player see loop-block as lava
+
+	else if lore of event-item contain lore of {tools.compass}:
+		if player is sneaking:
+			set player's compass target to player's location
+			send "<green>Now tracking this location"
+
+	else if lore of event-item contain lore of {tools.exp}:
+		if target block is enchanting table:
+			if player's level is greater than 0.5:
+				set {_tool} to {tools.exp}
+				reduce the player's level by 1
+				give player 2 of experience bottle
+				remove 1 of {_tool} from player
+
+	else if lore of tool contain lore of {tools.coin}:
+		player is sneaking
+		loop all entities in radius 15 around player where [entity input is a dropped item]:
+			teleport loop-entity to player
+
+
+	else if lore of offhand tool contain lore of {tools.coin}:
+		player is sneaking
+		loop all entities in radius 15 around player where [entity input is a dropped item]:
+			teleport loop-entity to player
+
+
+on consume:
+	if lore of event-item contain lore of {tools.bread}:
+		set player's food level to 10
+		set {hunger.%player%} to false
+
+
+on shoot:
+	shooter is player
+	"%event-projectile%" is "trident"
+	set {trident.%event-projectile%} to 1st line of lore of shooter's tool
+	if {trident.%event-projectile%} contain lore of {tools.trident}:
+		set {trident.%shooter%} to event-projectile
+
+on projectile hit:
+	if {trident.%event-projectile%} contain lore of {tools.trident}:
+		set {rod.location.%shooter%} to location at event-projectile
+		if block at {rod.location.%shooter%} is not air:
+			loop blocks in radius 1 of {rod.location.%shooter%}:
+				if loop-block is air:
+					set {rod.location.%shooter%} to location of loop-block
+
+on sneak toggle:
+	if player is not sneaking:
+		if {trident.%player%} is not 0:
+			set {time} to 0
+			if distance between {rod.location.%player%} and player is more than 150:
+				set {time} to 5
+				if distance between {rod.location.%player%} and player is more than 500:
+					set {time} to 10
+		
+			wait "%{time}% seconds" parsed as timespan
+			teleport player to {rod.location.%player%}
+			wait 1 tick
+			push {trident.%player%} downwards with speed 20
+			teleport {trident.%player%} to player
+			set {dam.%player%} to true
+			wait 8 ticks
+	
+			set {rod.location.%player%} to 0
+			set {trident.%shooter%} to 0
+			wait 20 ticks
+			set {dam.%player%} to false
+
+
+
+
+
+on damage:
+	if {dam.%victim%} is true:
+		cancel event
+
+	else if (victim's health - damage) < 0.1:
+		if {ringing} is not true:
+			if lore of victim's tool contain lore of {tools.tear}:
+				cancel event
+				imort(victim)	
+			if lore of victim's offhand tool contain lore of {tools.tear}:
+				if {second} is false:
+					cancel event
+					imort(victim)
+				set {second} to false
+
+	
+
+
+
+function imort(v: entity):
+	set {break} to true
+	set {second} to true
+	if {_v} is zombie:
+		execute console command "/replaceitem entity @e[type=minecraft:zombie] weapon.mainhand air"
+	if {_v}'s bed exists:
+		teleport {_v} to {_v}'s bed
+	else:
+		teleport {_v} to spawn of "world"
+	wait 2 ticks
+	remove 1 of {tools.tear} from {_v}
+	extinguish {_v}
+	cure {_v}
+	set {_v}'s health to 40
+	set {_v}'s food level to 40	
+	set {hunger.%{_v}%} to false
+	broadcast "&6%{_v}% was saved by God!"
+
+
+
+

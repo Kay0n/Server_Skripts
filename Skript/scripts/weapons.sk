@@ -1,0 +1,100 @@
+on load:
+	wait 1 tick
+	set {weapons.vamp} to unbreakable iron sword named "Dracular" with lore "Sucks the life out of opponents"
+	set {weapons.backtrack} to blaze rod named "Backtrack" with lore "Pulls the victim back in time"
+	set {weapons.steal} to stick named "Battle Thief" with lore "A Thief's delight"
+	set {weapons.bell} to bell named "Astarael" with lore "Cast all who hear it into death"
+	set {weapons.famine} to dead bush named "Famine" with lore "Inflicts a Curse of Paucity"
+	set {weapons.revenge} to paper named "Last Will and Testament" with lore "Revenge after death"
+	clear {weapons.list::*}
+	add {weapons.vamp} and {weapons.backtrack} and {weapons.steal} and {weapons.bell} and {weapons.famine} and {weapons.revenge} to {weapons.list::*}
+	remove "Weapons" from {custom.active::*}
+	add "Weapons" to {custom.active::*}
+
+
+on damage:
+	if lore of attacker's tool contain lore of {weapons.vamp}:
+		add damage / 4.5 to attacker's health
+
+
+	else if lore of attacker's tool contain lore of {weapons.famine}:
+		if victim is player:
+			clear attacker's tool
+			set {hunger.%victim%} to true
+			while {hunger.%victim%} is true:
+				wait 10 seconds
+				remove 1 from victim's food level
+				
+
+	else if lore of attacker's tool contain lore of {weapons.backtrack}:
+		if {locsaved.%victim%} is not true:
+			set {loc.%victim%} to location of victim
+			set {locsaved.%victim%} to true
+		else: 
+			teleport victim to {loc.%victim%}
+			set {loc.%victim%} to "0"
+			set {locsaved.%victim%} to false
+
+
+	else if lore of attacker's tool contain lore of {weapons.steal}:
+		set {tool} to victim's tool
+		set attacker's tool to {tool}
+		set victim's tool to air
+
+	else if attacker's display name contain "'s Revenge":
+		if attacker's display name contain victim's display name:
+			cancel event
+	else if victim's display name contain "'s Revenge":
+		if victim's display name contain attacker's display name:
+			delete victim
+	
+
+
+
+
+# Asterael - code for bell
+on right click:
+	if target block is bell:
+		loop {bell::*}:
+			if location of target block is loop-value:
+				set {loc} to loop-value
+				set {ringing} to true
+				play sound "block.bell.use" to player
+				play sound "block.bell.resonate" to all players
+				wait 1 tick
+				play sound "block.bell.resonate" to all players
+				wait 1 tick
+				play sound "block.bell.resonate" to all players
+				wait 1 tick
+				play sound "block.bell.resonate" to all players
+				wait 2 seconds
+				loop entities in radius 300 of {loc}:
+					if entity is not item frame:
+						kill loop-entity
+				set block at loop-value to air
+				set weather to thunder
+				remove loop-value from {bell::*}
+				set {ringing} to false
+
+on place:
+	if block is bell:
+		if lore of player's tool contain lore of {weapons.bell}:
+			set {location} to location
+			add {location} to {bell::*}
+		if lore of player's offhand tool contain lore of {weapons.bell}:
+			set {location} to location
+			add {location} to {bell::*}
+
+
+
+on death of player:
+	if attacker is player:
+		loop all items in victim's inventory:
+			if lore of loop-item contain lore of {weapons.revenge}:
+				summon zombie at victim
+				set name of last spawned entity to "%victim%'s Revenge"
+				set helmet of last spawned entity to diamond helmet
+				enchant last spawned entity's helmet with thorns 20
+				set target of last spawned entity to attacker
+				remove 1 of loop-item from victim
+				exit 1 loop
