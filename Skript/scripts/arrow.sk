@@ -8,32 +8,41 @@ on load:
 	set {arrows.ineptitude} to tipped arrow of regeneration named "Arrow of Ineptitude" with lore "Ineptitude"
 	set {arrows.hindrance} to tipped arrow of invisibility named "Arrow of Hindrance" with lore "Hindrance"
 	set {arrows.revelation} to spectral arrow named "Arrow of Revelation" with lore "Revelation"
+	set {arrows.safari} to tipped arrow of luck named "Arrow of Capture" with lore "Safari"
 
 	clear {arrows.list::*}
-	add {arrows.swapping} and {arrows.stomping} and {arrows.gravitation} and {arrows.freezing} and {arrows.ineptitude} and {arrows.hindrance} and {arrows.revelation} to {arrows.list::*}
+	add {arrows.swapping} and {arrows.stomping} and {arrows.gravitation} and {arrows.freezing} and {arrows.ineptitude} and {arrows.hindrance} and {arrows.safari} and {arrows.revelation} to {arrows.list::*}
 	remove "Arrows" from {custom.active::*}
 	add "Arrows" to {custom.active::*}
 
 on shoot:
 	shooter is player
 	"%event-projectile%" contain "arrow"
-	loop all items in shooter's inventory: 
-		if loop-item is tipped arrow or spectral arrow:
-			set {arrows.%event-projectile%} to the 1st line of the lore of loop-item
-			if {arrows.%event-projectile%} is set:
-				if tool of shooter is enchanted with infinity 1:
-					set {magical-arrow} to loop-item
-					remove 1 of {magical-arrow} from shooter
-				if offhand tool of shooter is enchanted with infinity 1:
-					set {magical-arrow} to loop-item
-					remove 1 of {magical-arrow} from shooter
-				if tool of shooter is crossbow:
-					cancel event
-					send "<red>Magical arrows do not function with crossbows" to shooter
-				if offhand tool of shooter is crossbow:
-					cancel event
-					send "<red>Magical arrows do not function with crossbows" to shooter
-			exit 1 loop
+	if shooter's offhand tool is tipped arrow or spectral arrow or arrow:
+		set {_arrowcheck} to shooter's offhand tool
+	else:
+
+		loop all items in shooter's inventory: 
+			if loop-item is tipped arrow or spectral arrow or arrow:
+				set {_arrowcheck} to loop-item
+				exit 1 loop
+
+
+	set {arrows.%event-projectile%} to the 1st line of the lore of {_arrowcheck}
+	if {arrows.%event-projectile%} is set:
+		if tool of shooter is enchanted with infinity 1:
+			set {magical-arrow} to {_arrowcheck}
+			remove 1 of {magical-arrow} from shooter
+		if offhand tool of shooter is enchanted with infinity 1:
+			set {magical-arrow} to {_arrowcheck}
+			remove 1 of {magical-arrow} from shooter
+		if tool of shooter is crossbow:
+			cancel event
+			send "<red>Magical arrows do not function with crossbows" to shooter
+		if offhand tool of shooter is crossbow:
+			cancel event
+			send "<red>Magical arrows do not function with crossbows" to shooter
+		
 
 
 
@@ -67,11 +76,22 @@ on projectile hit:
 				remove glowing from loop-entity
 				apply glowing to loop-entity for 5 seconds
 
+		if {arrows.%event-projectile%} contain "ID:":
+			set {_list::*} to {arrows.%event-projectile%} split at ":"
+			set {animal} to {_list::2}
+			spawn ("%{animal}%" parsed as entity type) at event-location
+				
+			exit trigger
+
+
+
 
 on damage:
 	if projectile exists:
 		if "%event-projectile%" is "arrow":
 			if {arrows.%event-projectile%} is set:
+				if (victim's health - damage) < 0.1:
+					exit trigger
 				if {arrows.%event-projectile%} is not "None":
 					wait 2 ticks
 					removeAllEffects(victim)
@@ -112,7 +132,31 @@ on damage:
 				clear {dropitems::*}
 				exit trigger
 
+
+			if {arrows.%event-projectile%} is lore of {arrows.safari}:
+
+				if victim is not player:
+					set {safariball} to victim
+					delete victim
+					give attacker tipped arrow of luck named "Active Safari Arrow" with lore "ID:%{safariball}%"
 		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function removeAllEffects(p: entity) :: text:
 	remove speed from {_p}
 	remove strength from {_p}
