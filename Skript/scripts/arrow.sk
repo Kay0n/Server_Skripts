@@ -9,9 +9,14 @@ on load:
 	set {arrows.hindrance} to tipped arrow of invisibility named "Arrow of Hindrance" with lore "Hindrance"
 	set {arrows.revelation} to spectral arrow named "Arrow of Revelation" with lore "Revelation"
 	set {arrows.safari} to tipped arrow of luck named "Arrow of Capture" with lore "Safari"
+	set {arrows.rebound} to tipped arrow of water breathing named "Arrow of Rebound" with lore "Rebound"
+	set {arrows.compounding} to tipped arrow of instant health named "Arrow of Compounding" with lore "Compounding"
+
+
+
 
 	clear {arrows.list::*}
-	add {arrows.swapping} and {arrows.stomping} and {arrows.gravitation} and {arrows.freezing} and {arrows.ineptitude} and {arrows.hindrance} and {arrows.safari} and {arrows.revelation} to {arrows.list::*}
+	add {arrows.swapping} and {arrows.stomping} and {arrows.gravitation} and {arrows.freezing} and {arrows.ineptitude} and {arrows.hindrance} and {arrows.safari} and {arrows.revelation} and {arrows.rebound} and {arrows.compounding} to {arrows.list::*}
 	remove "Arrows" from {custom.active::*}
 	add "Arrows" to {custom.active::*}
 
@@ -140,14 +145,25 @@ on damage:
 					delete victim
 					give attacker tipped arrow of luck named "Active Safari Arrow" with lore "ID:%{safariball}%"
 		
+			if {arrows.%event-projectile%} is lore of {arrows.rebound}:
+				give attacker {arrows.rebound}
+
+			
+
+			if {arrows.%event-projectile%} is lore of {arrows.compounding}:
+				set {a.compounding.%victim%} to true
+				wait 45 seconds
+				set {a.compounding.%victim%} to false
+				damage victim by {a.compounding.%victim%.damage}
+				clear {a.compounding.%victim%.damage}
+
+				
 
 
-
-
-
-
-
-
+on damage:
+	if {a.compounding.%victim%} is true:
+		add damage to {a.compounding.%victim%.damage}
+		cancel event
 
 
 

@@ -1,0 +1,13 @@
+command /eval <text>:
+    trigger:
+        evaluate arg-1
+
+command /name <text>:
+    trigger:
+        set name of player's tool to arg-1
+
+
+
+command /lore <text>:
+    trigger:
+        set lore of player's tool to arg-1

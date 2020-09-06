@@ -20,8 +20,9 @@ on load:
 on damage:
 	if damage was caused by fall:
 		if lore of victim's boots contain lore of {armor.fallboots}:
-			clear victim's boots
 			cancel event
+			clear victim's boots
+			
 
 	
 

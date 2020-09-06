@@ -1,9 +1,4 @@
 
-command /test:
-	trigger:
-		loop {party.%player%.members::*}:
-			broadcast "%loop-value%"
-			remove loop-value from {party.%player%.members::*}
 
 command /party <text> <text=>:
 	usage: /party <[create <party-name>]|[remove <player>]|[accept <player>]|[list]|[chat]>

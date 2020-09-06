@@ -99,8 +99,9 @@ on place:
 
 
 
-on death of player:
-	if attacker is player:
+on death:
+	if attacker is a player:
+		
 		loop all items in victim's inventory:
 			if lore of loop-item contain lore of {weapons.revenge}:
 				summon zombie at victim

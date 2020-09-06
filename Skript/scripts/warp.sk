@@ -1,0 +1,80 @@
+command /warp [<text>] [<text>]:
+	trigger:
+
+		if player is op:
+			if arg-1 is "add":
+				if arg-2 is not set:
+					send "<red>Please input a second value"
+					exit trigger
+				if arg-2 contain " ":
+					send "<red>Warp names cannot contain spaces, please try again" to player
+					exit trigger
+				loop {warps::*}:
+					if arg-2 is loop-value:
+						send "<red>This warp already exists" to player
+						exit trigger
+				add arg-2 to {warps::*}
+				add player's location to {warps::*}
+				send "<green>Warp added" to player
+				exit trigger
+				
+				
+			else if arg-1 is "remove":
+				set {_num} to 1
+				loop {warps::*}:
+					add 1 to {_num}
+					if arg-2 is loop-value:
+						remove arg-2 from {warps::*}
+						remove {warps::%{_num}%} from {warps::*}
+						send "<red>Warp removed" to player
+
+						exit trigger
+				send "<red>There are no warps by that name" to player
+				exit trigger
+
+			else if arg-1 is "setspawn":
+				set {_num} to 1
+				loop {warps::*}:
+					add 1 to {_num}
+					if arg-2 is loop-value:
+						send "<cyan>Global spawnpoint is now relocated"
+						set {spawnpoint} to {warps::%{_num}%}
+						exit trigger
+				send "<red>There are no warps by that name" to player
+				exit trigger
+
+
+		if arg-1 is not set:
+			send "<yellow>--------<gold>Warp<yellow>--------"
+			send "<green>/warp list - lists all active warp names"
+			send "<green>/warp <name> - teleports to warp"
+			send "<green>/warp add <name> - adds warp location"
+			send "<green>/warp remove <name> - deletes warp from list"
+			send "<green>/warp setspawn <name> - sets respawn location to warp"
+			exit trigger
+
+		else if arg-1 is "list":
+			set {_num} to 1
+			send "<orange>Warps:" to player
+			loop {warps::*}:
+				add 1 to {_num}
+				if {_num} is divisible by 2:
+					send formatted "<cmd:/warp %loop-value%><yellow>%loop-value%" to player
+			exit trigger
+
+		else:
+			set {_num} to 1
+			loop {warps::*}:
+				add 1 to {_num}
+				if arg-1 is loop-value:
+					send "<cyan>Teleporting..."
+					teleport player to {warps::%{_num}%}
+					exit trigger
+			send "<red>There are no warps by that name" to player
+
+
+		
+
+on respawn:
+	if {spawnpoint} is set:
+		teleport player to {spawnpoint}

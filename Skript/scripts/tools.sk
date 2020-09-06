@@ -4,7 +4,6 @@ on load:
 	set {tools.magma} to magma cream named "Pyrophobia" with lore "Magmatic Essence"
 	set {tools.scaffolding} to wool named "Construction Materials" with lore "Scaffolding"
 	set {tools.tear} to ghast tear named "Tear of God" with lore "Grants imortality to the holder"
-	set {tools.compass} to compass named "Tracker" with lore "Tracks a location"
 	set {tools.exp} to glass bottle named "Experience Canister" with lore "Store magical essence in liquid form"
 	set {tools.trident} to trident named "Rod of Narsa" with lore "Fast Transport"
 	set {tools.bread} to bread named "Angelic Bread" with lore "Divine Sustinance"
@@ -14,7 +13,7 @@ on load:
 
 
 	clear {tools.list::*}
-	add {tools.aqua} and {tools.magma} and {tools.scaffolding} and {tools.tear} and {tools.compass} and {tools.exp} and {tools.trident} and {tools.bread} and {tools.coin} to {tools.list::*}
+	add {tools.aqua} and {tools.magma} and {tools.scaffolding} and {tools.tear} and {tools.exp} and {tools.trident} and {tools.bread} and {tools.coin} to {tools.list::*}
 	remove "Tools" from {custom.active::*}
 	add "Tools" to {custom.active::*}
 
@@ -80,11 +79,6 @@ on right click:
 		loop blocks in radius 15 around player:
 			if loop-block is lava:
 				make player see loop-block as lava
-
-	else if lore of event-item contain lore of {tools.compass}:
-		if player is sneaking:
-			set player's compass target to player's location
-			send "<green>Now tracking this location"
 
 	else if lore of event-item contain lore of {tools.exp}:
 		if target block is enchanting table:
@@ -163,7 +157,7 @@ on damage:
 				if lore of victim's tool contain lore of {tools.tear}:
 					cancel event
 					imort(victim)	
-				if lore of victim's offhand tool contain lore of {tools.tear}:
+				else if lore of victim's offhand tool contain lore of {tools.tear}:
 					if {second} is false:
 						cancel event
 						imort(victim)

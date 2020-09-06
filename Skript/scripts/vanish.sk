@@ -22,29 +22,38 @@ on death of player:
 			set death message to ""
 
 
+on right click on player:
+	if {vanish.%player%} is true:
+		cancel event
+		open inventory of clicked player to player
+
 
 on chat:
 	if message contain "\van" or "\v" or "\vanish":
 		cancel event
-		if {vanish.%player%} is true:
-			send "<green>You are no longer Vanished!" to player
-			set {vanish.%player%} to false
-			remove player from {vanished::*}
-			reveal player from all players
-			broadcast "<yellow>%player% joined the game"
-			send "[User Authenticator/INFO]: UUID of player %player% is e1af68a5-64gf-41ae-b5d9-caffg91b6b06" to console
-			send "[Server thread/INFO]: %player%[/192.168.1.1:59317] logged in with entity id <id.parsed.string> at ([world]-114.8470668216955, 79.0, 1439.6313594385147)" to console
+		if player is op:
+			if {vanish.%player%} is true:
+				send "<green>You are no longer Vanished!" to player
+				set {vanish.%player%} to false
+				remove player from {vanished::*}
+				reveal player from all players
+				broadcast "<yellow>%player% joined the game"
+				send "[User Authenticator/INFO]: UUID of player %player% is e1af68a5-64gf-41ae-b5d9-caffg91b6b06" to console
+				send "[Server thread/INFO]: %player%[/192.168.1.1:59317] logged in with entity id <id.parsed.string> at ([world]-114.8470668216955, 79.0, 1439.6313594385147)" to console
+	
+	
+			else:
+				send "<light green>You are now Vanished!" to player
+				set {vanish.%player%} to true
+				add player to {vanished::*}
+				hide player from all players
+				broadcast "<yellow>%player% left the game"
+				send "[Server thread/INFO]: %player% lost connection: Disconnected" to console
+				send "[Server thread/INFO]: %player% left the game" to console
+			exit trigger
 
 
-		else:
-			send "<light green>You are now Vanished!" to player
-			set {vanish.%player%} to true
-			add player to {vanished::*}
-			hide player from all players
-			broadcast "<yellow>%player% left the game"
-			send "[Server thread/INFO]: %player% lost connection: Disconnected" to console
-			send "[Server thread/INFO]: %player% left the game" to console
-		exit trigger
+
 	loop {vanished::*}:
 		if player is loop-value:
 			cancel event

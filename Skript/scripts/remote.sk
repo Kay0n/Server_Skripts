@@ -82,7 +82,3 @@ command /custom <text> <text="empty">:
 
 
 
-command /lore <text>:
-	permission: perm.empty
-	trigger:
-		set lore of player's tool to arg-1

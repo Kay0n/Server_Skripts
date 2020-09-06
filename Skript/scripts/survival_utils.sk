@@ -1,3 +1,7 @@
+options:
+	avoid: air or lava or water
+	min: 1
+	max: 2000000
 
 
 # calculates nether co-ordinates from overwrold co-ords
@@ -24,7 +28,7 @@ on death:
 		set {_dim} to "nether"
 	else:
 		set {_dim} to "end"
-	send "You died at <yellow>%location of player%<reset> in the %{_dim}%" to player
+	send formatted "You died at <yellow>%location of player%<reset> in the %{_dim}%" to player
 	
 
 # just a thing
@@ -101,3 +105,17 @@ on right click with compass:
 		set {compass.%player%} to location of player
 		set player's compass target to {compass.%player%}
 		send "Now tracking <yellow>%{compass.%player%}%" to player
+
+
+
+command /wild:
+	trigger:
+		set {_loc::old} to player's location
+		while player's location is {_loc::old}:
+			set {_loc::new} to location at random number between {@min} and {@max}, 0, random number between {@min} and {@max}
+			loop blocks above {_loc::new}:
+				if loop-block and block above loop-block are air:
+					if block under loop-block is not {@avoid}:
+						set {_loc::new} to location of loop-block
+						teleport player to {_loc::new}
+						stop loop
