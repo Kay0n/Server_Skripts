@@ -1,30 +1,44 @@
-on join:
-	clear {tpa.%player%::*}
+
+
+options:
+
+    enableTPA: true
+
 
 
 command /tpa <player>:
 	trigger:
-		if arg-1 is player:
-			send "<red>Cannot teleport to yourself you stupid fuck" to player
-			exit trigger
-		loop {tpa.%arg-1%::*}:
-			if loop-value is player:
-				send "<yellow>You have already sent a request to this player" to player
+		if {@enableTPA} is not true:
+			send "<red>This function has been disabled by the administrator"
+		else:
+			if arg-1 is player:
+				send "<red>You can't teleport to yourself!" to player
 				exit trigger
+			loop {tpa::%arg-1%::*}:
+				if loop-value is player:
+					send "<yellow>You have already sent a request to this player" to player
+					exit trigger
 
-		send formatted "<yellow>%player% has requested to teleport to you <command:/tpaccept %player%><white>[<green>accept<white>]" to arg-1
-		send "<yellow>Request sent. They have 60 seconds to accept" to player
-		add player to {tpa.%arg-1%::*}
-		wait 60 seconds
-		remove player from {tpa.%arg-1%::*}
+			send formatted "<yellow>%player% has requested to teleport to you <command:/tpaccept %player%><white>[<green>accept<white>]" to arg-1
+			send "<yellow>Request sent. They have 60 seconds to accept" to player
+			add player to {tpa::%arg-1%::*}
+			wait 60 seconds
+			remove player from {tpa::%arg-1%::*}
 
 command /tpaccept <player>:
 	trigger:
-		loop {tpa.%player%::*}:
-			if loop-value is arg-1:
-				send "<yellow>Teleporting..." to player
-				send "<yellow>Teleporting..." to arg-1
-				teleport loop-value to player
-				remove arg-1 from {tpa.%player%::*}
-				exit trigger
-		send "<yellow>You have no active requests from this player" to player
+		if {@enableTPA} is not true:
+			send "<red>This function has been disabled by the administrator"
+		else:
+			loop {tpa::%player%::*}:
+				if loop-value is arg-1:
+					send "<yellow>Teleporting..." to player
+					send "<yellow>Teleporting..." to arg-1
+					teleport loop-value to player
+					remove arg-1 from {tpa::%player%::*}
+					exit trigger
+			send "<yellow>You have no active requests from this player" to player
+
+# clears all reuests on join
+on join:
+	clear {tpa::%player%::*}

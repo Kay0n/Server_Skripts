@@ -9,6 +9,10 @@ command /warp [<text>] [<text>]:
 				if arg-2 contain " ":
 					send "<red>Warp names cannot contain spaces, please try again" to player
 					exit trigger
+
+				if arg-2 is "add" or "remove" or "list" or "sign":
+					send "<red>These names are reserved, please try again" to player
+					exit trigger
 				loop {warps::*}:
 					if arg-2 is loop-value:
 						send "<red>This warp already exists" to player
@@ -31,31 +35,28 @@ command /warp [<text>] [<text>]:
 						exit trigger
 				send "<red>There are no warps by that name" to player
 				exit trigger
-
-			else if arg-1 is "setspawn":
-				set {_num} to 1
-				loop {warps::*}:
-					add 1 to {_num}
-					if arg-2 is loop-value:
-						send "<cyan>Global spawnpoint is now relocated"
-						set {spawnpoint} to {warps::%{_num}%}
-						exit trigger
-				send "<red>There are no warps by that name" to player
-				exit trigger
+		else if arg-1 is "add" or "remove":
+			send formatted "<red>Only administrators can perform this command" to player
+			exit trigger
+			
 
 
 		if arg-1 is not set:
 			send "<yellow>--------<gold>Warp<yellow>--------"
 			send "<green>/warp list - lists all active warp names"
 			send "<green>/warp <name> - teleports to warp"
-			send "<green>/warp add <name> - adds warp location"
-			send "<green>/warp remove <name> - deletes warp from list"
-			send "<green>/warp setspawn <name> - sets respawn location to warp"
+			if player is op:
+				send "<green>/warp add <name> - adds warp location"
+				send "<green>/warp remove <name> - deletes warp from list"
 			exit trigger
 
 		else if arg-1 is "list":
+			if size of {warps::*} is 0:
+				send "<red>No active warps"
+				exit trigger
 			set {_num} to 1
 			send "<orange>Warps:" to player
+			
 			loop {warps::*}:
 				add 1 to {_num}
 				if {_num} is divisible by 2:
@@ -70,11 +71,7 @@ command /warp [<text>] [<text>]:
 					send "<cyan>Teleporting..."
 					teleport player to {warps::%{_num}%}
 					exit trigger
-			send "<red>There are no warps by that name" to player
+			send "<red>There are no warps by that name, use '/warp list' to see all warps" to player
 
 
 		
-
-on respawn:
-	if {spawnpoint} is set:
-		teleport player to {spawnpoint}

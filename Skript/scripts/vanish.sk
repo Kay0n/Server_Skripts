@@ -38,7 +38,7 @@ on chat:
 				remove player from {vanished::*}
 				reveal player from all players
 				broadcast "<yellow>%player% joined the game"
-				send "[User Authenticator/INFO]: UUID of player %player% is e1af68a5-64gf-41ae-b5d9-caffg91b6b06" to console
+				send "[User Authenticator/INFO]: UUID of player %player% is e1af68a5-616k-41ae-b5d9-caffg91b6b06" to console
 				send "[Server thread/INFO]: %player%[/192.168.1.1:59317] logged in with entity id <id.parsed.string> at ([world]-114.8470668216955, 79.0, 1439.6313594385147)" to console
 	
 	

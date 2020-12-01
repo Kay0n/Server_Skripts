@@ -1,43 +1,124 @@
- 
+options:
+	enableChatColor: true
 
 
 
-command /chatcolor <text>:
-	usage: /chatcolor <color>
+
+command /chat [<text>] [<text>] [<text>]:
 	trigger:
-		if arg-1 parsed as color is not color:
-			send "That is not valid, possible colors are:" and "<red>red, <light red>light red, <purple>purple, <light purple>light purple, <blue>blue, <light blue>light blue, <aqua>aqua, <light cyan>light cyan, <green>green, <lime>lime, <orange>orange, <yellow>yellow, <white>white, <grey>grey, <black>black" to player
-		else if arg-1 is "dark grey":
-			send "That color is reserved. Please choose another" to player
+
+		if arg-1 is "color":
+			if {@enableChatColor} is false:
+				send "<red>The admin has disabled this command"
+			else:
+				if arg-2 parsed as color is not color:
+					send "<yellow>Invalid color, Please use:" and "<red>red, <light red>light red, <purple>purple, <light purple>light purple, <blue>blue, <light blue>light blue, <aqua>aqua, <light cyan>light cyan, <green>green, <lime>lime, <orange>orange, <yellow>yellow, <white>white, <grey>grey, <black>black" to player
+				else if arg-2 is "dark grey":
+					send "That color is reserved. Please choose another" to player
+				else:
+					set {chatcolor::%uuid of player%} to arg-2
+					send formatted "<yellow>Your chat color is now <%arg-2%>%arg-2%" to player
+					set player's tablist name to "<%arg-2%>%player%"
+
+		else if arg-1 is "mode":
+			if arg-2 is not set:
+				send "<yellow>Please enter a player name or 'global'"
+			else if arg-2 is "global" or "g":
+				set {chatmode::%uuid of player%} to "global"
+				send "<yellow>Joined global chat"
+			else:
+				set {chatmode::%uuid of player%} to arg-2
+				send "<yellow>You are now in a private chat with %arg-2%"
+
+		
+		else if arg-1 is "prefix":
+			if player is op:
+				if arg-3 is not set:
+					send "<yellow>Please enter a player and prefix" to player
+				else:
+					set {prefix::%uuid of (arg-2 parsed as player)%} to arg-3
+					send formatted "<yellow>%arg-2%'s prefix is now '<white>%arg-3%<yellow>'" to player
+			else:
+				send formatted "<red>You do not have permission to perform this command" to player
 		else:
-			set {chatcolor.%player%} to arg-1
-			send "Your chat color is now <%arg-1%>%arg-1%" to player
-			set player's tablist name to "<%arg-1%>%player%"
+			send "<yellow>--------<gold>Chat<yellow>--------"
+			send "<green>/chat color <color> - change chat color"
+			send "<green>/chat mode <player|public> - enables public or private chat"
+			send "<green>/chat prefix <player> <prefix> - sets prefix, requires OP"
 
+			exit trigger
 
-command /clearchat:
-	aliases: /cc
-	trigger:
-		loop 300 times:
-			send " " to player
+				
 
 on join:
-	if {chatcolor.%player%} is not set:
-		set {chatcolor.%player%} to "white"
-	if {chatcolor.%player%} is set:
-		set player's tablist name to "<%{chatcolor.%player%}%>%player%"
-	set {%player%} to player's name
+	if {chatcolor::%uuid of player%} is not set:
+		set {chatcolor::%uuid of player%} to "white"
+	if {chatmode::%uuid of player%} is not set:
+		set {chatmode::%uuid of player%} to "global"
+	if {prefix::%uuid of player%} is not set:
+		set {prefix::%uuid of player%} to ""
+	set player's tablist name to "<%{chatcolor::%uuid of player%}%>%player%"
+
+
 
 
 on chat:
-	if {chatcolor.%player%} is set: 
-		set chat format to "<%{chatcolor.%player%}%><%display name of player%><reset> %message%"
-	if message contain "eval":
-		set {_var::*} to message split at ":"
-		evaluate {_var::2}
-		cancel event
-	if message contain "{xyz}":
-		set {_message} to message
+	set {_message} to message
+	cancel event
+
+	# replace coords
+	if {_message} contain "{xyz}":
 		replace all "{xyz}" with "<yellow>%location of player%<reset>" in {_message}
-		cancel event
-		make player say "%{_message}%"
+	
+	# private message
+	if size of {pm::%uuid of player%::*} is not 0:
+		set {_p} to {chatmode::%uuid of player%} parsed as player
+		loop {pm::%uuid of player%::*}:
+			if loop-value is not online:
+				add "<light green>[Private]<white><%player%>%{_message}%" to {offlinePm::%loop-value's uuid%::*}
+			else:
+				send "<light green>[Private]<white><%player%>%{_message}%" to loop-value
+			send "<light green>[Private]<white><%player%>%{_message}%" to player
+
+	# public message
+	else:
+		loop all players:
+			send formatted "%{prefix::%uuid of player%}%<%{chatcolor::%uuid of player%}%><%display name of player%><reset> %{_message}%" to loop-player
+
+
+
+# pm command //NOT TESTED
+command /pm [<text>] [<player>]:
+	trigger:
+		
+		if arg-1 is "add":
+			if arg-2 is not set:
+				send "<red>Please enter an online or offline player"
+			else:
+				send "<yellow>%arg-2% has been added to your pm's"
+				add arg-2 to {pm::%uuid of player%::*}
+				if arg-2 is not online:
+					send "<yellow>This player is not online, they will recieve any messages when they next log in"
+
+		else if arg-1 is "remove":
+			send "<yellow>%arg-2% has been removed from your pm's"
+			remove arg-2 from {pm::%uuid of player%::*}
+			if size of {pm::%uuid of player%::*} is 0:
+				send "<yellow>Returning to global chat"
+
+		else if arg-1 is "clear":
+			clear {pm::%uuid of player%::*}
+			send "<yellow>All player's have been removed from your pm's"
+			send "<yellow>Returning to global chat"
+
+		else if arg-1 is "read":
+		
+
+		else:
+			send "<yellow>--------<gold>Chat<yellow>--------"
+			send "<green>/pm add <player> - adds player to pm's
+			send "<green>/pm remove <player> - removes player from pm's
+			send "<green>/pm clear - clears all connections and returns to global
+			send "<green>/pm read <number> - read any offline messages recived"
+
+on leave:
